@@ -20,7 +20,7 @@ io.on('connection', function (socket) {
 
     socket.on('message', function (msg) { // Обработчик на событие 'message' и аргументом (msg) из переменной message
         logger.warn('-----------'); // Logging
-        logger.warn('User: ' + name + ' | Message: ' + msg);
+        logger.warn('User: ' + name + ' | Message: ' + msg[0] + '| TextArea:' + msg[1]);
         logger.warn('====> Sending message to other chaters...');
         io.sockets.emit('messageToClients', msg, name); // Отправляем всем сокетам событие 'messageToClients' и отправляем туда же два аргумента (текст, имя юзера)
     });
