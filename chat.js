@@ -10,13 +10,6 @@ server.listen(port); // Теперь мы можем подключиться к
 app.use(express.static(__dirname + '/public'));
 
 
-io.on('connection', function (socket) { // Создаем обработчик события 'connection' которое создает io.connect(port); с аргументом socket
-    var name = 'U' + (socket.id).toString().substr(1, 4); // Создаем никнейм нашему клиенту. В начале буква 'U' дальше берем 3 символа ID (сокета) после первого символа, и все это клеим с помощью '+'
-    socket.broadcast.emit('newUser', name); // Отсылает событие 'newUser' всем подключенным, кроме текущего. На клиенте навешаем обработчик на 'newUser' (Отправляет клиентам событие о подключении нового юзера)
-    socket.emit('userName', name); // Отправляем текущему клиенту событие 'userName' с его ником (name) (Отправляем клиенту его юзернейм)
-    logger.info(name + ' connected to chat!'); // Логгирование
-});
-
 io.on('connection', function (socket) {
     var name = 'U' + (socket.id).toString().substr(1, 4);
     socket.broadcast.emit('newUser', name);
