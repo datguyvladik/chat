@@ -16,3 +16,8 @@ $(document).on('click', 'button', function () { // Прослушка кнопк
     socket.emit('message', message); // Отправляем событие 'message' на сервер c самим текстом (message)- как переменная
     $('input').val(null); // Заполняем поле для ввода 'пустотой'
 });
+
+socket.on('messageToClients', function (msg, name) {
+    console.log(name + ' | => ' + msg); // Логгирование в консоль браузера
+    $('textarea').val($('textarea').val() + name + ' : ' + msg + '\n'); // Добавляем в поле для текста сообщение типа (Ник : текст)
+});
