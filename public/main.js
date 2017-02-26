@@ -1,5 +1,5 @@
 var port = 3000; // Указываем порт на котором у на стоит сокет
-var socket = io.connect('http://192.168.0.104:' + port); // Тут мы объявляем "socket" (дальше мы будем с ним работать) и подключаемся сразу к серверу через порт
+var socket = io.connect('http://localhost:' + port); // Тут мы объявляем "socket" (дальше мы будем с ним работать) и подключаемся сразу к серверу через порт
 var textareaID = 'general';
 socket.on('userName', function (userName) { // Создаем прослушку 'userName' и принимаем переменную name в виде аргумента 'userName'
     console.log('You\'r username is => ' + userName); // Логгирование в консоль браузера
