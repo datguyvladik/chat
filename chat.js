@@ -5,9 +5,17 @@ var io = require('socket.io')(server); // Подключаем socket.io и ук
 var log4js = require('log4js'); // Подключаем наш логгер
 var logger = log4js.getLogger(); // Подключаем с модуля log4js сам логгер
 var port = 3000; // Можно любой другой порт
+var path = require('path');
 logger.debug('Script has been started...'); // Логгируем.
 server.listen(port); // Теперь мы можем подключиться к нашему серверу через localhost:3000 при запущенном скрипте
 app.use(express.static(__dirname + '/public'));
+
+
+
+app.get('/reg', function (req, res) {
+    res.sendfile('public/reg.html')
+});
+
 //подключение базы
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/test');
@@ -33,11 +41,8 @@ User.find(function (err, user) {      //вывод всей базы
 
 
 io.on('connection', function (socket) {
-    var name = 'U' + (socket.id).toString().substr(1, 4);
-    socket.broadcast.emit('newUser', name);
+    var name;
 
-    logger.info(name + ' connected to chat!');
-    socket.emit('userName', name);
     // Обработчик ниже // Мы его сделали внутри коннекта
 
     socket.on('message', function (msg) { // Обработчик на событие 'message' и аргументом (msg) из переменной message
@@ -54,16 +59,24 @@ io.on('connection', function (socket) {
             if (err) return logger.info(err);
             logger.info('Запись успешно добавлена.')
         });
+        name = userData[0];
+        socket.broadcast.emit('newUser', name);
+        logger.info(name + ' connected to chat!');
+        socket.emit('userName', name);
     });
 
     socket.on('userSearchDataMongo', function (searchData) {
-        User.findOne({ name: searchData[0] }, function (err, user) {
+        User.findOne({ name: searchData[0], password: searchData[1] }, function (err, user) {
             if (err) return logger.error(err);
-            if (user == null){
-                logger.info ('No user');
+            if (user == null) {
+                logger.info('No user');
             } else {
-            logger.info(user);
+                logger.info(user);
             }
+            name = searchData[0];
+            socket.broadcast.emit('newUser', name);
+            logger.info(name + ' connected to chat!');
+            socket.emit('userName', name);
         });
     });
 
