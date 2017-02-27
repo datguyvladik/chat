@@ -15,14 +15,22 @@ var db = mongoose.connection;
 db.on('error', function (err) {
     logger.error('connection error:', err.message);
 });
-db.once('open', function callback () {
+db.once('open', function callback() {
     logger.info("Connected to DB!");
 });
 
 var userSchema = mongoose.Schema({
-    name: String
+    name: String,
+    password: String
 });
+
 var User = mongoose.model('User', userSchema);
+
+User.find(function (err, user) {      //вывод всей базы
+    if (err) return logger.error(err);
+    logger.info(user);
+})
+
 
 io.on('connection', function (socket) {
     var name = 'U' + (socket.id).toString().substr(1, 4);
@@ -39,9 +47,24 @@ io.on('connection', function (socket) {
         io.sockets.emit('messageToClients', msg, name); // Отправляем всем сокетам событие 'messageToClients' и отправляем туда же два аргумента (текст, имя юзера)
     });
 
-    socket.on('userNameMongo', function(userNameMongo) {
-        var userMongo = new User({ name: userNameMongo });
-        logger.warn("name:"+ userMongo.name);
+    socket.on('userDataMongo', function (userData) {
+        var userMongo = new User({ name: userData[0], password: userData[1] });
+        logger.warn("name: " + userMongo.name + " password: " + userMongo.password);
+        userMongo.save(function (err) {
+            if (err) return logger.info(err);
+            logger.info('Запись успешно добавлена.')
+        });
+    });
+
+    socket.on('userSearchDataMongo', function (searchData) {
+        User.findOne({ name: searchData[0] }, function (err, user) {
+            if (err) return logger.error(err);
+            if (user == null){
+                logger.info ('No user');
+            } else {
+            logger.info(user);
+            }
+        });
     });
 
 

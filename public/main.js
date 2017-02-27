@@ -22,12 +22,6 @@ $(document).on('click', '#sendMsg', function () { // Прослушка кноп
     $('input').val(null); // Заполняем поле для ввода 'пустотой'
 });
 
-$(document).on('click', '#regbtn', function() {
-    var userNameMongo = $('#userName').val();
-    console.log(userNameMongo);
-    socket.emit('userNameMongo',userNameMongo); 
-    $('#userName').val(null); 
-})
 
 socket.on('messageToClients', function (msg, name) {
     console.log(name + ' | => ' + 'Message: ' + msg[0] + ' | TextArea: ' + msg[1]); // Логгирование в консоль браузера
@@ -43,6 +37,25 @@ $(document).on('click', function (e) {
         return null;
     }
 });
+
+
+$(document).on('click', '#regbtn', function() { //регистрация
+    var userData = [];
+    userData[0] = $('#userName').val();
+    userData[1] = $('#userPass').val();
+    socket.emit('userDataMongo',userData); 
+    $('#userName').val(null); 
+    $('#userPass').val(null); 
+})
+
+$(document).on('click', '#searchbtn' , function() { //поиск
+    var searchData = [];
+    searchData[0] = $('#searchName').val();
+    searchData[1] = $('#searchPass').val();
+    socket.emit('userSearchDataMongo',searchData); 
+    $('#searchName').val(null); 
+    $('#searchPass').val(null);
+})
 
 
 
