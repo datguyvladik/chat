@@ -32,6 +32,7 @@ var userSchema = mongoose.Schema({
     password: String
 });
 
+
 var User = mongoose.model('User', userSchema);
 
 User.find(function (err, user) {      //вывод всей базы
@@ -62,7 +63,7 @@ io.on('connection', function (socket) {
         name = userData[0];
         socket.broadcast.emit('newUser', name);
         logger.info(name + ' connected to chat!');
-        socket.emit('userName', name);
+        socket.emit('userName', name);   
     });
 
     socket.on('userSearchDataMongo', function (searchData) {
@@ -72,11 +73,12 @@ io.on('connection', function (socket) {
                 logger.info('No user');
             } else {
                 logger.info(user);
+                name = searchData[0];
+                socket.broadcast.emit('newUser', name);
+                logger.info(name + ' connected to chat!');
+                socket.emit('userName', name);
             }
-            name = searchData[0];
-            socket.broadcast.emit('newUser', name);
-            logger.info(name + ' connected to chat!');
-            socket.emit('userName', name);
+
         });
     });
 
