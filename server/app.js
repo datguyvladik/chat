@@ -27,13 +27,8 @@ var io = require('socket.io').listen(server);
 
 io.on('connection', function (socket) {
    socket.on('fillUsers', function (users) {
-       db.login(users.username, users.pass, function (users) {
-           var parsedUser = {
-               username: users.username,
-               isAdmin: users.isAdmin,
-               chats: users.chats
-           }
-           socket.emit('res', parsedUser);
+       db.parsedLogin(users.username, users.pass, function (data) {
+           socket.emit('res', data);
        });
    });
 });

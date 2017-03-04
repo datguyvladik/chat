@@ -32,6 +32,23 @@ function login(username, pass, successCallback) {
     });
 }
 
+function parsedLogin(name, pass, successCallback) {
+    var username = name;
+    var pass = pass;
+    login(username, pass, function (user) {
+        if (user) {
+            var parsedUser = {
+                username: user.username,
+                isAdmin: user.isAdmin,
+                chats: user.chats
+            }
+            successCallback(parsedUser);
+        } else {
+            successCallback(false);
+        }
+    });
+}
+
 function findAllUsers(successCallback) {
     User.find({}, function (err, users) {
         if (err) {
@@ -44,22 +61,28 @@ function findAllUsers(successCallback) {
 
 function parsedlistUser(successCallback) {
     findAllUsers(function (data) {
-        var parsedUser = [];
+        var parsedUsers = [];
         data.forEach(function (el) {
-            parsedUser.push({
+            parsedUsers.push({
                 username: el.username,
                 created: el.created,
                 isAdmin: el.isAdmin,
                 chats: el.chats
             })
         });
-        successCallback(parsedUser);
+        successCallback(parsedUsers);
     })
 }
 
-parsedlistUser(function(data){
+
+parsedlistUser(function (data) {
     console.log(data);
 });
+
+
+parsedLogin('vlad', '1234', function (data) {
+    console.log(data);
+})
 
 //TO DO: MAX 
 /*
@@ -82,3 +105,5 @@ parsedlistUser(function(data){
 
 module.exports.login = login;
 module.exports.createUser = createUser;
+module.exports.parsedLogin = parsedLogin;
+module.exports.parsedlistUser = parsedlistUser;
