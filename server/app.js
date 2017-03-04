@@ -4,6 +4,8 @@ var path = require('path');
 var config = require('./config');
 var mongoose = require('./lib/mongoose');
 var app = express();
+var db = require('./createDb');
+
 
 app.engine('ejs', require('ejs-locals'));
 app.set('views', __dirname + '/template');
@@ -20,3 +22,19 @@ var server = http.createServer(app);
 server.listen(config.get('port'), function(){
   console.log('Express server listening on port ' + config.get('port'));
 });
+
+var io = require('socket.io').listen(server);
+
+io.on('connection', function (socket) {
+   socket.on('fillUsers', function (users) {
+       db.login(users.username, users.pass, function (users) {
+           var parsedUser = {
+               username: users.username,
+               isAdmin: users.isAdmin,
+               chats: users.chats
+           }
+           socket.emit('res', parsedUser);
+       });
+   });
+});
+

@@ -30,6 +30,8 @@ function login(username, pass, successCallback) {
 }
 
 
+module.exports.login = login;
+
 
 
  
