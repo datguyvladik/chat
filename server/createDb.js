@@ -31,7 +31,7 @@ function login(username, pass, successCallback) {
 
 
 module.exports.login = login;
-
+module.exports.createUser = createUser;
 
 
  
