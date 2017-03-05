@@ -102,7 +102,7 @@ function createChat(nameFromClient, membersFromClient, successCallback) {
     });
 }
 
-function addMember(chatName, member, callback) {
+function addMember(chatName, member, successCallback) {
     Chat.findOneAndUpdate(
         {name: chatName},
         {$push:{members:member}},
@@ -110,23 +110,24 @@ function addMember(chatName, member, callback) {
         function (err, chat) {
             if (err){
                 console.log(err);
-                callback(false);
+                successCallback(false);
             }
             else {
-                callback(chat);
+                successCallback(chat);
             }
         }
     )
 }
 
-function getChatData(chatName, callback) {
+function getChatData(chatName, successCallback) {
     Chat.findOne({
         name: chatName
     }, function (err, data) {
         if (err){
             console.log(err);
+            successCallback(false);
         } else {
-            callback(data);
+            successCallback(data);
         }
     });
 }
