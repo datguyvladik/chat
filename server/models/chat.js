@@ -14,8 +14,3 @@ var schema = new Schema({
 });
 
 exports.Chat = mongoose.model('Chat', schema);
-
-
-
-
-

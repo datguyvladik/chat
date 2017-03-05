@@ -75,21 +75,69 @@ function parsedlistUser(successCallback) {
 }
 
 
-parsedlistUser(function (data) {
+/*parsedlistUser(function (data) {
     console.log(data);
 });
 
 
 parsedLogin('vlad', '1234', function (data) {
     console.log(data);
-})
+})*/
+
+//max
+
+function createChat(nameFromClient, membersFromClient, successCallback) {
+    var chat = new Chat({
+        name: nameFromClient,
+        members: membersFromClient
+    });
+    chat.save( function (err, chat){
+        if (err){
+            console.log(err);
+            successCallback(false);
+        } else {
+            successCallback(chat);
+        }
+
+    });
+}
+
+function addMember(chatName, member, callback) {
+    Chat.findOneAndUpdate(
+        {name: chatName},
+        {$push:{members:member}},
+        {safe:true, upsert:true},
+        function (err, chat) {
+            if (err){
+                console.log(err);
+                callback(false);
+            }
+            else {
+                callback(chat);
+            }
+        }
+    )
+}
+
+function getChatData(chatName, callback) {
+    Chat.findOne({
+        name: chatName
+    }, function (err, data) {
+        if (err){
+            console.log(err);
+        } else {
+            callback(data);
+        }
+    });
+}
+
 
 //TO DO: MAX 
 /*
 Функции для chata
-1)Создать чат
-2)Добавить нового пользователя в члены
-3)вернуть все данные о чате 
+1)Создать чат - done
+2)Добавить нового пользователя в члены - done
+3)вернуть все данные о чате - done
 */
 
 //TO DO: VLAD
@@ -107,3 +155,6 @@ module.exports.login = login;
 module.exports.createUser = createUser;
 module.exports.parsedLogin = parsedLogin;
 module.exports.parsedlistUser = parsedlistUser;
+module.exports.createChat = createChat;
+module.exports.addMember = addMember;
+module.exports.getChatData = getChatData;
