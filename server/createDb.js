@@ -4,7 +4,7 @@ var Chat = require('./models/chat').Chat;
 var Message = require('./models/message').Message;
 
 
-function createUser(username, pass, successCallback) {
+function createUser(username, pass, successCallback) { //создать юзера
     var user = new User({
         username: username,
         password: pass
@@ -20,7 +20,7 @@ function createUser(username, pass, successCallback) {
 }
 
 
-function login(username, pass, successCallback) {
+function login(username, pass, successCallback) { //логин
     User.findOne({
         username: username
     }, function (err, user) {
@@ -32,7 +32,7 @@ function login(username, pass, successCallback) {
     });
 }
 
-function parsedLogin(name, pass, successCallback) {
+function parsedLogin(name, pass, successCallback) { //получить данные по логину(нужные)
     var username = name;
     var pass = pass;
     login(username, pass, function (user) {
@@ -49,7 +49,7 @@ function parsedLogin(name, pass, successCallback) {
     });
 }
 
-function findAllUsers(successCallback) {
+function findAllUsers(successCallback) { //найти всех юзеров
     User.find({}, function (err, users) {
         if (err) {
             console.log(err);
@@ -59,7 +59,7 @@ function findAllUsers(successCallback) {
     })
 }
 
-function parsedlistUser(successCallback) {
+function parsedlistUser(successCallback) { //получить лист юзеров (нужные поля)
     findAllUsers(function (data) {
         var parsedUsers = [];
         data.forEach(function (el) {
@@ -86,13 +86,13 @@ parsedLogin('vlad', '1234', function (data) {
 
 //max
 
-function createChat(nameFromClient, membersFromClient, successCallback) {
+function createChat(nameFromClient, membersFromClient, successCallback) { //создать чат
     var chat = new Chat({
         name: nameFromClient,
         members: membersFromClient
     });
-    chat.save( function (err, chat){
-        if (err){
+    chat.save(function (err, chat) {
+        if (err) {
             console.log(err);
             successCallback(false);
         } else {
@@ -102,28 +102,33 @@ function createChat(nameFromClient, membersFromClient, successCallback) {
     });
 }
 
-function addMember(chatName, member, successCallback) {
-    Chat.findOneAndUpdate(
-        {name: chatName},
-        {$push:{members:member}},
-        {safe:true, upsert:true},
+function addMember(chatName, member, successCallback) { //добавить члена в чат
+    Chat.findOneAndUpdate({
+            name: chatName
+        }, {
+            $push: {
+                members: member
+            }
+        }, {
+            safe: true,
+            upsert: true
+        },
         function (err, chat) {
-            if (err){
+            if (err) {
                 console.log(err);
                 successCallback(false);
-            }
-            else {
+            } else {
                 successCallback(chat);
             }
         }
     )
 }
 
-function getChatData(chatName, successCallback) {
+function getChatData(chatName, successCallback) { //получить дату чата
     Chat.findOne({
         name: chatName
     }, function (err, data) {
-        if (err){
+        if (err) {
             console.log(err);
             successCallback(false);
         } else {
@@ -132,6 +137,33 @@ function getChatData(chatName, successCallback) {
     });
 }
 
+
+
+function createMessage(message, chatID, from, successCallback) { //создать сообщение
+    var message = new Message({
+        message: message,
+        chatID: chatID,
+        from: from
+    });
+    message.save(function (err, message) {
+        if (err) {
+            console.error(err);
+            successCallback(false);
+        } else {
+            successCallback(true);
+        }
+    });
+}
+
+function getMessageData(successCallback) { //получить данные чата
+    Message.find({}, function (err, message) {
+        if (err) {
+            console.log(err);
+        } else {
+            successCallback(message);
+        }
+    })
+}
 
 //TO DO: MAX 
 /*
@@ -144,18 +176,19 @@ function getChatData(chatName, successCallback) {
 //TO DO: VLAD
 /*
 Функции для месаг
-1)Создать месагу
-2) Получить мессагу
+1)Создать месагу - done
+2) Получить мессагу - done
 */
 
 
 
 
 
-module.exports.login = login;
 module.exports.createUser = createUser;
 module.exports.parsedLogin = parsedLogin;
 module.exports.parsedlistUser = parsedlistUser;
 module.exports.createChat = createChat;
 module.exports.addMember = addMember;
 module.exports.getChatData = getChatData;
+module.exports.createMessage = createMessage;
+module.exports.getMessageData = getMessageData;
