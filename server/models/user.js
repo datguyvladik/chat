@@ -27,8 +27,7 @@ var schema = new Schema({
     default: false
   },
   chats: {
-    type: [String],
-    default: null
+    type: [String]
   }
 });
 

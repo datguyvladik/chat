@@ -19,6 +19,22 @@ function createUser(username, pass, successCallback) { //создать юзер
     });
 }
 
+/*
+function login(username, pass, successCallback) { //логин(промисы)
+    return new Promise(function (resolve, reject) {
+        User.findOne({
+            username: username
+        }, function (err, user) {
+            if (user && user.checkPassword(pass)) {
+                resolve(user);
+            } else {
+                reject(false);
+            }
+        });
+    })
+}
+*/
+
 
 function login(username, pass, successCallback) { //логин
     User.findOne({
@@ -31,6 +47,7 @@ function login(username, pass, successCallback) { //логин
         }
     });
 }
+
 
 function parsedLogin(name, pass, successCallback) { //получить данные по логину(нужные)
     var username = name;
@@ -74,6 +91,33 @@ function parsedlistUser(successCallback) { //получить лист юзер�
     })
 }
 
+function addChatToUser(username, chatName, successCallback) { //добавить чат
+    User.findOneAndUpdate({
+            username: username
+        }, {
+            $push: {
+                chats: chatName
+            }
+        }, {
+            safe: true,
+            upsert: true,
+            new: true
+        },
+        function (err, user) {
+            if (err) {
+                console.log(err);
+                successCallback(false);
+            } else {
+                successCallback(user);
+            }
+        }
+    )
+}
+
+
+
+
+
 
 /*parsedlistUser(function (data) {
     console.log(data);
@@ -111,7 +155,8 @@ function addMember(chatName, member, successCallback) { //добавить чл�
             }
         }, {
             safe: true,
-            upsert: true
+            upsert: true,
+            new: true
         },
         function (err, chat) {
             if (err) {
