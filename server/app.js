@@ -27,7 +27,7 @@ var io = require('socket.io').listen(server);
 
 io.on('connection', function (socket) {
    socket.on('fillUsers', function (users) {
-       db.parsedLogin(users.username, users.pass, function (data) {
+       db.login(users.username, users.pass, function (data) {
            socket.emit('res', data);
        });
    });
