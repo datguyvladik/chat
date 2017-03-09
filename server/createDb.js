@@ -9,12 +9,12 @@ function createUser(username, pass, successCallback) { //создать юзер
         username: username,
         password: pass
     });
-    user.save()
+   return user.save()
         .then(function (user) {
             if (user) {
-                successCallback(true);
+                return user;
             } else {
-                successCallback(false);
+                return null;
             }
         })
         .catch(function (err) {
@@ -23,8 +23,9 @@ function createUser(username, pass, successCallback) { //создать юзер
 }
 
 
-function login(username, pass, successCallback) {
-    User.findOne({
+
+function login(username, pass) {
+   return User.findOne({
             username: username
         })
         .then(function (user) {
@@ -34,9 +35,9 @@ function login(username, pass, successCallback) {
                     isAdmin: user.isAdmin,
                     chats: user.chats
                 }
-                successCallback(parsedUser);
+                return parsedUser;
             } else {
-                successCallback(false);
+                return null;
             }
         })
         .catch(function (err) {
@@ -46,8 +47,8 @@ function login(username, pass, successCallback) {
 
 
 
-function findAllUsers(successCallback) { //найти всех юзеров
-    User.find({})
+function findAllUsers() { //найти всех юзеров
+    return User.find({})
         .then(function (users) {
             var parsedUsers = [];
             users.forEach(function (el) {
@@ -58,7 +59,7 @@ function findAllUsers(successCallback) { //найти всех юзеров
                     chats: el.chats
                 })
             });
-            successCallback(parsedUsers);
+            return parsedUsers;
         })
         .catch(function (err) {
             console.log(err);
@@ -66,9 +67,8 @@ function findAllUsers(successCallback) { //найти всех юзеров
 }
 
 
-
-function addChatToUser(username, chatName, successCallback) { //добавить чат юзеру
-    User.findOneAndUpdate({
+function addChatToUser(username, chatName) { //добавить чат юзеру
+   return User.findOneAndUpdate({
             username: username
         }, {
             $push: {
@@ -84,7 +84,7 @@ function addChatToUser(username, chatName, successCallback) { //добавить
                 username: user.username,
                 chats: user.chats
             };
-            successCallback(parsedUser);
+            return parsedUser;
         })
         .catch(function (err) {
             console.log(err);
@@ -92,17 +92,17 @@ function addChatToUser(username, chatName, successCallback) { //добавить
 }
 
 
-function createChat(nameFromClient, membersFromClient, successCallback) { //создать чат
+function createChat(nameFromClient, membersFromClient) { //создать чат
     var chat = new Chat({
         name: nameFromClient,
         members: membersFromClient
     });
-    chat.save()
-        .then(function (user) {
-            if (user) {
-                successCallback(true);
+    return chat.save()
+        .then(function (chat) {
+            if (chat) {
+                return chat;
             } else {
-                successCallback(false);
+                return null;
             }
         })
         .catch(function (err) {
@@ -111,8 +111,8 @@ function createChat(nameFromClient, membersFromClient, successCallback) { //со
 }
 
 
-function addMember(chatName, member, successCallback) { //добавить члена в чат
-    Chat.findOneAndUpdate({
+function addMember(chatName, member) { //добавить члена в чат
+    return Chat.findOneAndUpdate({
             name: chatName
         }, {
             $push: {
@@ -125,9 +125,9 @@ function addMember(chatName, member, successCallback) { //добавить чл�
         })
         .then(function (chat) {
             if (chat) {
-                successCallback(true);
+                return chat;
             } else {
-                successCallback(false);
+                return null;
             }
         })
         .catch(function (err) {
@@ -135,15 +135,15 @@ function addMember(chatName, member, successCallback) { //добавить чл�
         });
 }
 
-function getChatData(chatName, successCallback) { //получить дату чата
-    Chat.findOne({
+function getChatData(chatName) { //получить дату чата
+    return Chat.findOne({
             name: chatName
         })
         .then(function (chat) {
             if (chat) {
-                successCallback(chat);
+                return chat;
             } else {
-                successCallback(false);
+                return null;
             }
         })
         .catch(function (err) {
@@ -153,18 +153,18 @@ function getChatData(chatName, successCallback) { //получить дату ч
 
 
 
-function createMessage(message, chatID, from, successCallback) { //создать сообщение
+function createMessage(message, chatID, from) { //создать сообщение
     var message = new Message({
         message: message,
         chatID: chatID,
         from: from
     });
-    message.save()
+    return message.save()
         .then(function (message) {
             if (message) {
-                successCallback(message);
+                return message;
             } else {
-                successCallback(false);
+                return null;
             }
 
         })
@@ -173,15 +173,15 @@ function createMessage(message, chatID, from, successCallback) { //создат�
         })
 }
 
-function getMessages(chatName, successCallback) { //получить данные определенного чата
-    Message.find({
+function getMessages(chatName) { //получить данные определенного чата
+    return Message.find({
             chatID: chatName
         })
         .then(function (messages) {
             if (messages) {
-                successCallback(messages);
+                return messages;
             } else {
-                successCallback(false);
+                return null;
             }
         })
         .catch(function (err) {
