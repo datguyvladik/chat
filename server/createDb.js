@@ -4,7 +4,7 @@ var Chat = require('./models/chat').Chat;
 var Message = require('./models/message').Message;
 mongoose.Promise = Promise;
 
-function createUser(username, pass, successCallback) { //создать юзера
+function createUser(username, pass) { //создать юзера
     var user = new User({
         username: username,
         password: pass
