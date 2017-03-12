@@ -1,6 +1,3 @@
-/**
- * Created by maximpoleley on 12/03/2017.
- */
 var port = 3000;
 var socket = io.connect('http://192.168.0.101:' + port);
 var electron = require('electron');
@@ -30,7 +27,15 @@ $(document).ready(function () {
        var newMsg = document.createElement('li');
        newMsg.appendChild(msg);
        $('#'+chatID).append(newMsg);
-
-
    })
 });
+
+/*
+*TODO MAX:
+1)список юзеров онлайн
+2)если админ удаляет сообщения из DOM
+
+*TODO VLAD:
+1)добалвять новый чат на клиенте
+2)сообщения в разные чаты
+*/
