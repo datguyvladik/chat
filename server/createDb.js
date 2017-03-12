@@ -9,7 +9,7 @@ function createUser(username, pass) { //создать юзера
         username: username,
         password: pass
     });
-   return user.save()
+    return user.save()
         .then(function (user) {
             if (user) {
                 return user;
@@ -25,7 +25,7 @@ function createUser(username, pass) { //создать юзера
 
 
 function login(username, pass) {
-   return User.findOne({
+    return User.findOne({
             username: username
         })
         .then(function (user) {
@@ -68,7 +68,7 @@ function findAllUsers() { //найти всех юзеров
 
 
 function addChatToUser(username, chatName) { //добавить чат юзеру
-   return User.findOneAndUpdate({
+    return User.findOneAndUpdate({
             username: username
         }, {
             $push: {

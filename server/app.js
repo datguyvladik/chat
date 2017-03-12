@@ -26,10 +26,18 @@ server.listen(config.get('port'), function(){
 var io = require('socket.io').listen(server);
 
 io.on('connection', function (socket) {
-   socket.on('fillUsers', function (users) {
-       db.login(users.username, users.pass, function (data) {
-           socket.emit('res', data);
+
+
+   socket.on('createUser', function (userData) {  //запрос на регистрацию
+       db.createUser(userData.username, userData.pass).then(function(data){
+            socket.emit('createUser', data);
        });
+   });
+
+   socket.on('login', function(userData){  //запрос на 
+      db.login(userData.username, userData.pass).then(function(data){
+        socket.emit('login', data);
+      });
    });
 });
 
