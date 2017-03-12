@@ -11,6 +11,8 @@ var logger = log4js.getLogger();
 
 
 
+
+
 var server = http.createServer(app);
 server.listen(config.get('port'), function () {
   console.log('Express server listening on port ' + config.get('port'));
@@ -28,16 +30,22 @@ io.on('connection', function (socket) {
     });
   });
 
-  socket.on('login', function (userData) { //запрос на 
+  socket.on('login', function (userData) { //запрос на логин
     db.login(userData.username, userData.pass).then(function (data) {
       socket.emit('login', data);
       logger.info('User Connected! \n' + 'User name: ' + data.username);
     });
   });
 
+
   socket.on('createMessage',function(messageData){
     db.createMessage(messageData.message, messageData.chatID,messageData.from).then(function(data) {
         io.sockets.emit('sendMessage',data);
+
+  socket.on('createMessage',function(messageData){ //запрос на сообщение 
+    db.createMessage(messageData.msg, messageData.chat,messageData.username).then(function(data) {
+        socket.emit('sendMessage',data);
+
         logger.info('New Message from: '+data.from + " In chat: "+ data.chatID + " Message: " + data.message);
     });
   

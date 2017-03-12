@@ -191,23 +191,6 @@ function getMessages(chatName) { //получить данные определ�
 
 
 
-//TO DO: MAX 
-/*
-Функции для chata
-1)Создать чат - done
-2)Добавить нового пользователя в члены - done
-3)вернуть все данные о чате - done
-*/
-
-//TO DO: VLAD
-/*
-Функции для месаг
-1)Создать месагу - done
-2) Получить мессагу - done
-*/
-
-
-
 module.exports.createUser = createUser;
 module.exports.login = login;
 module.exports.findAllUsers = findAllUsers;
