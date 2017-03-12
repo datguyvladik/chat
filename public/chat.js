@@ -2,7 +2,7 @@
  * Created by maximpoleley on 12/03/2017.
  */
 var port = 3000;
-var socket = io.connect('http://localhost:' + port);
+var socket = io.connect('http://192.168.0.101:' + port);
 var electron = require('electron');
 const ipcRenderer = require('electron').ipcRenderer;
 

@@ -9,15 +9,6 @@ var log4js = require('log4js');
 var logger = log4js.getLogger();
 
 
-app.engine('ejs', require('ejs-locals'));
-app.set('views', __dirname + '/template');
-app.set('view engine', 'ejs');
-
-
-require('./routes')(app);
-
-app.use(express.static(path.join(__dirname, '/public')));
-
 
 
 var server = http.createServer(app);
