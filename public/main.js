@@ -6,6 +6,7 @@ const BrowserWindow = electron.BrowserWindow
 
 const path = require('path')
 const url = require('url')
+const ipcMain = require('electron').ipcMain
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -58,3 +59,19 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+ipcMain.on('synchronous-message', function(event, arg) {
+    console.log(arg);  // prints "ping"
+    event.returnValue = 'pong';
+    mainWindow.loadURL(url.format({
+        pathname: path.join(__dirname, 'chat.html'),
+        protocol: 'file:',
+        slashes: true
+    }))
+});
+
+global.user ={
+    username: null,
+    chats: null,
+    isAdmin: null
+}

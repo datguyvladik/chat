@@ -45,8 +45,8 @@ io.on('connection', function (socket) {
   });
 
   socket.on('createMessage',function(messageData){
-    db.createMessage(messageData.msg, messageData.chat,messageData.username).then(function(data) {
-        socket.emit('sendMessage',data);
+    db.createMessage(messageData.message, messageData.chatID,messageData.from).then(function(data) {
+        io.sockets.emit('sendMessage',data);
         logger.info('New Message from: '+data.from + " In chat: "+ data.chatID + " Message: " + data.message);
     });
   
