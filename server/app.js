@@ -54,10 +54,15 @@ io.on('connection', function (socket) {
   });
 
   socket.on('getChats',function (username) {
-
     db.getChatDataforUser(username).then(function(chatData){
       socket.emit('getChats',chatData);
     });
+  });
+
+  socket.on('getMessages' , function(chatName) {
+    db.getMessages(chatName).then(function(messageData) {
+      socket.emit('getMessages',chatData);
+    })
   });
 
 
