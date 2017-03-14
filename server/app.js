@@ -66,7 +66,12 @@ io.on('connection', function (socket) {
   });
 
   socket.on('addMember', (data) => {
-    db.addMember(data.chat, data.username);
+    db.addMember(data.chat, data.username)
+        .then(
+        (data) => {
+          io.sockets.emit('checkUserForChat',data);
+        }
+    );
   });
 
 

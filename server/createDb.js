@@ -113,7 +113,7 @@ function createChat(nameFromClient, membersFromClient) { //создать чат
 
 function addMember(chatName, member) { //добавить члена в чат
     return Chat.findOneAndUpdate({
-            name: chatName
+            _id: chatName
         }, {
             $push: {
                 members: member
@@ -134,6 +134,7 @@ function addMember(chatName, member) { //добавить члена в чат
             console.log(err);
         });
 }
+
 
 function getChatData(chatName) { //получить дату чата
     return Chat.find({
@@ -190,8 +191,7 @@ function createMessage(message, chatID, from) { //создать сообщен�
         })
 }
 
-function getMessages(chatName) {
-    console.log(chatName); //получить данные определенного чата
+function getMessages(chatName) {  //получить данные определенного чата
     return Message.find({
       chatID:chatName
     })

@@ -86,9 +86,21 @@ $(document).ready(function () {
         }
     });
 
+    socket.on('checkUserForChat', (data) => {
+       data.members.forEach((el) => {
+          if (el == userData.username) {
+              var chatName = document.createTextNode(data.name);
+              var newChat = document.createElement('li');
+              newChat.appendChild(chatName);
+              newChat.setAttribute('id', data._id);
+              $('#chatList').append(newChat);
+          }
+       });
+    });
+
 
     $('#addUserToChat').on('click', function () {
-        var chat = $('#specChat').val();
+        var chat = chatID;
         var username = $('#specUserToAdd').val();
         var obj = {
             chat: chat,
