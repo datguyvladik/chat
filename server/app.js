@@ -61,7 +61,7 @@ io.on('connection', function (socket) {
 
   socket.on('getMessages' , function(chatName) {
     db.getMessages(chatName).then(function(messageData) {
-      socket.emit('getMessages',chatData);
+      socket.emit('getMessages',messageData);
     })
   });
 

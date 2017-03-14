@@ -1,5 +1,5 @@
 var port = 3000;
-var socket = io.connect('http://localhost:' + port);
+var socket = io.connect('http://192.168.0.102:' + port);
 const ipcRenderer = require('electron').ipcRenderer;
 
 $('#btn-login').on('click', function () {

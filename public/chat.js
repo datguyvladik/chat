@@ -1,24 +1,36 @@
 var port = 3000;
-var socket = io.connect('http://localhost:' + port);
+var socket = io.connect('http://192.168.0.102:' + port);
 var electron = require('electron');
 const ipcRenderer = require('electron').ipcRenderer;
 
 
 $(document).ready(function () {
-    var chatID = 'generalChat';
+    var chatID;
     var userData = {
         username: electron.remote.getGlobal('user').username,
         chats: electron.remote.getGlobal('user').chats,
         isAdmin: electron.remote.getGlobal('user').isAdmin
     }
+    
+    function changeCurrentChat(chat) {
+        console.log('Change current chat => ' + chat)
+        socket.emit('getMessages', chat);
+    }
 
-    $('#chatList').on('click', function (e) {
-        e = e || window.event;
-        var el = e.target || e.srcElement;
-        chatID = el.id + 'Chat';
-        var chatWindow = document.getElementById('generalChat');
-        chatWindow.setAttribute('id', chatID);
-        console.log(chatWindow);
+    $('#chatList').on('click', function (event) {
+            chatID = event.target.id;
+            console.log(chatID);
+            changeCurrentChat(chatID);
+    });
+
+    socket.on('getMessages', (messageData) => {
+        console.log(messageData);
+        messageData.forEach(function (element) {
+            var msg = document.createTextNode(element.from + ": " + element.message);
+            var newMsg = document.createElement('li');
+            newMsg.appendChild(msg);
+            $('#mainChat').append(newMsg);
+        });
     });
 
     $('#sendMsg').on('click', function () {
@@ -64,6 +76,7 @@ $(document).ready(function () {
     });
 
     socket.on('sendMessage', function (msgData) {
+        console.log(msgData);
         if (msgData.chatID == chatID) {
             var msg = document.createTextNode(msgData.from + ": " + msgData.message);
             var newMsg = document.createElement('li');
