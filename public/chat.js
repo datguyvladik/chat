@@ -86,13 +86,14 @@ $(document).ready(function () {
         }
     });
 
-    socket.on('checkUserForChat', (data) => {
-       data.members.forEach((el) => {
+    socket.on('checkUserForChat', (chatData) => {
+        console.log(chatData);
+       chatData.members.forEach((el) => {
           if (el == userData.username) {
-              var chatName = document.createTextNode(data.name);
+              var chatName = document.createTextNode(chatData.name);
               var newChat = document.createElement('li');
               newChat.appendChild(chatName);
-              newChat.setAttribute('id', data._id);
+              newChat.setAttribute('id', chatData._id);
               $('#chatList').append(newChat);
           }
        });
