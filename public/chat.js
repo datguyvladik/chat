@@ -62,7 +62,7 @@ $(document).ready(function () {
             var chatName = document.createTextNode(chats[i].name);
             var newChat = document.createElement('li');
             newChat.appendChild(chatName);
-            newChat.setAttribute('id', chats[i].name);
+            newChat.setAttribute('id', chats[i]._id);
             $('#chatList').append(newChat);
         }
     });
@@ -71,7 +71,7 @@ $(document).ready(function () {
         var chatName = document.createTextNode(chatData.name);
         var newChat = document.createElement('li');
         newChat.appendChild(chatName);
-        newChat.setAttribute('id', chatData.name);
+        newChat.setAttribute('id', chatData._id);
         $('#chatList').append(newChat);
 
     });
@@ -85,7 +85,23 @@ $(document).ready(function () {
             $('#mainChat').append(newMsg);
         }
     });
+
+
+    $('#addUserToChat').on('click', function () {
+        var chat = $('#specChat').val();
+        var username = $('#specUserToAdd').val();
+        var obj = {
+            chat: chat,
+            username: username
+        }
+        socket.emit('addMember', obj);
+    });
+
 });
+
+
+
+
 
 /*
 *TODO MAX:

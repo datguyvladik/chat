@@ -41,7 +41,7 @@ io.on('connection', function (socket) {
 
   socket.on('createMessage', function (messageData) { //запрос на сообщение 
     db.createMessage(messageData.message, messageData.chatID, messageData.from).then(function (data) {
-      socket.emit('sendMessage', data);
+      io.sockets.emit('sendMessage', data);
       logger.info('New Message from: ' + data.from + " In chat: " + data.chatID + " Message: " + data.message);
     });
   });
@@ -65,6 +65,9 @@ io.on('connection', function (socket) {
     })
   });
 
+  socket.on('addMember', (data) => {
+    db.addMember(data.chat, data.username);
+  });
 
 
 });

@@ -136,7 +136,7 @@ function addMember(chatName, member) { //добавить члена в чат
 }
 
 function getChatData(chatName) { //получить дату чата
-    return Chat.findOne({
+    return Chat.find({
             name: chatName
         })
         .then(function (chat) {
@@ -190,10 +190,11 @@ function createMessage(message, chatID, from) { //создать сообщен�
         })
 }
 
-function getMessages(chatName) { //получить данные определенного чата
+function getMessages(chatName) {
+    console.log(chatName); //получить данные определенного чата
     return Message.find({
-            chatID: chatName
-        })
+      chatID:chatName
+    })
         .then(function (messages) {
             if (messages) {
                 return messages;
@@ -205,7 +206,6 @@ function getMessages(chatName) { //получить данные определ�
             console.log(err);
         })
 }
-
 
 
 module.exports.createUser = createUser;
