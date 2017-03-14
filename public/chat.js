@@ -25,6 +25,7 @@ $(document).ready(function () {
 
     socket.on('getMessages', (messageData) => {
         console.log(messageData);
+        $('#mainChat').children().remove();
         messageData.forEach(function (element) {
             var msg = document.createTextNode(element.from + ": " + element.message);
             var newMsg = document.createElement('li');
@@ -81,7 +82,7 @@ $(document).ready(function () {
             var msg = document.createTextNode(msgData.from + ": " + msgData.message);
             var newMsg = document.createElement('li');
             newMsg.appendChild(msg);
-            $('#' + chatID).append(newMsg);
+            $('#mainChat').append(newMsg);
         }
     });
 });
