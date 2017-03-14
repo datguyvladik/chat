@@ -38,16 +38,28 @@ io.on('connection', function (socket) {
   });
 
 
-  socket.on('createMessage',function(messageData){
-    db.createMessage(messageData.message, messageData.chatID,messageData.from).then(function(data) {
-        io.sockets.emit('sendMessage',data);
 
-  socket.on('createMessage',function(messageData){ //запрос на сообщение 
-    db.createMessage(messageData.msg, messageData.chat,messageData.username).then(function(data) {
-        socket.emit('sendMessage',data);
-
-        logger.info('New Message from: '+data.from + " In chat: "+ data.chatID + " Message: " + data.message);
+  socket.on('createMessage', function (messageData) { //запрос на сообщение 
+    db.createMessage(messageData.message, messageData.chatID, messageData.from).then(function (data) {
+      socket.emit('sendMessage', data);
+      logger.info('New Message from: ' + data.from + " In chat: " + data.chatID + " Message: " + data.message);
     });
-  
-  })
+  });
+
+  socket.on('createChat', function(chatData){ //создать чат
+    db.createChat(chatData.chatname,chatData.members).then(function(chatData){
+      socket.emit('chatCreated',chatData);
+      logger.info('New chat created! Chat name: '+chatData.chatname+" Members: "+ chatData.members);
+    }); 
+  });
+
+  socket.on('getChats',function (username) {
+
+    db.getChatDataforUser(username).then(function(chatData){
+      socket.emit('getChats',chatData);
+    });
+  });
+
+
+
 });

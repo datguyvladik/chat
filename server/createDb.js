@@ -151,6 +151,23 @@ function getChatData(chatName) { //получить дату чата
         })
 }
 
+function getChatDataforUser(username) {
+    return Chat.find({
+        members: username
+    })
+    .then(function (chat) {
+        if (chat) {
+            return chat;
+        } else {
+            return null;
+        }
+    })
+    .catch(function (err) {
+        console.log(err);
+    })
+}
+
+
 
 
 function createMessage(message, chatID, from) { //создать сообщение
@@ -197,5 +214,6 @@ module.exports.findAllUsers = findAllUsers;
 module.exports.createChat = createChat;
 module.exports.addMember = addMember;
 module.exports.getChatData = getChatData;
+module.exports.getChatDataforUser = getChatDataforUser;
 module.exports.createMessage = createMessage;
 module.exports.getMessages = getMessages;
