@@ -100,7 +100,7 @@ function createChat(nameFromClient, membersFromClient) { //создать чат
     return chat.save()
         .then(function (chat) {
             if (chat) {
-                return chat;
+                return [chat];
             } else {
                 return null;
             }
@@ -125,7 +125,7 @@ function addMember(chatName, member) { //добавить члена в чат
         })
         .then(function (chat) {
             if (chat) {
-                return chat;
+                return [chat];
             } else {
                 return null;
             }

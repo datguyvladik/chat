@@ -18,7 +18,7 @@ function createWindow () {
 
     // and load the index.html of the app.
     mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'index.html'),
+        pathname: path.join(__dirname, 'app/index.html'),
         protocol: 'file:',
         slashes: true
     }))
@@ -64,7 +64,7 @@ ipcMain.on('synchronous-message', function(event, arg) {
     console.log(arg);  // prints "ping"
     event.returnValue = 'pong';
     mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'chat.html'),
+        pathname: path.join(__dirname, 'app/chat.html'),
         protocol: 'file:',
         slashes: true
     }))

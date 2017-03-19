@@ -49,7 +49,7 @@ io.on('connection', function (socket) {
   socket.on('createChat', function(chatData){ //создать чат
     db.createChat(chatData.chatname,chatData.members).then(function(chatData){
       socket.emit('chatCreated',chatData);
-      logger.info('New chat created! Chat name: '+chatData.chatname+" Members: "+ chatData.members);
+      logger.info('New chat created! Chat name: '+chatData[0].name + " Members: "+chatData[0].members);
     }); 
   });
 
@@ -67,6 +67,7 @@ io.on('connection', function (socket) {
 
   socket.on('addMember', (data) => {
     db.addMember(data.chat, data.username).then(function (chatData) {
+      logger.info('User ' + data.username + ' added to chat ' + chatData[0].name)
        socket.broadcast.emit('checkUserForChat',chatData);
     });
   });
