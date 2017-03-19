@@ -57,6 +57,15 @@ app.on('activate', function () {
     }
 })
 
+mainWindow.on("close", (e) =>{
+    mainWindow.webContents.send('before-close');
+    e.preventDefault();
+});
+
+/*ipcMain.on('closed', (event) =>{
+    app.quit();
+});*/
+
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
@@ -70,8 +79,9 @@ ipcMain.on('synchronous-message', function(event, arg) {
     }))
 });
 
+
 global.user ={
     username: null,
     chats: null,
     isAdmin: null
-}
+};

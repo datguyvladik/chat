@@ -66,6 +66,22 @@ function findAllUsers() { //найти всех юзеров
         });
 }
 
+function findUser(username) {
+    return User.findOne({
+        username: username
+    })
+        .then(function (user) {
+            if(user) {
+                return user;
+            } else {
+                return null;
+            }
+        })
+        .catch(function (err) {
+            console.log(err);
+        })
+}
+
 
 function addChatToUser(username, chatName) { //добавить чат юзеру
     return User.findOneAndUpdate({
@@ -137,8 +153,8 @@ function addMember(chatName, member) { //добавить члена в чат
 
 
 function getChatData(chatName) { //получить дату чата
-    return Chat.find({
-            name: chatName
+    return Chat.findOne({
+            _id: chatName
         })
         .then(function (chat) {
             if (chat) {
@@ -211,6 +227,7 @@ function getMessages(chatName) {  //получить данные определ
 module.exports.createUser = createUser;
 module.exports.login = login;
 module.exports.findAllUsers = findAllUsers;
+module.exports.findUser = findUser;
 module.exports.createChat = createChat;
 module.exports.addMember = addMember;
 module.exports.getChatData = getChatData;

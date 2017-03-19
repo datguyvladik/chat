@@ -7,23 +7,38 @@ const ipcRenderer = require('electron').ipcRenderer;
 
 
 $(document).ready(function () {
-    var chatID;
-    var userData = {
+    let chatID;
+    let userData = {
         username: electron.remote.getGlobal('user').username,
         chats: electron.remote.getGlobal('user').chats,
         isAdmin: electron.remote.getGlobal('user').isAdmin
-    }
-    
+    };
+
+
+    ipcRenderer.on('before-close', () =>{
+       socket.emit('disconnectMe', userData.username);
+       ipcRenderer.send('closed');
+    });
+
+    socket.on('connect', () => {
+        if(socket.connected){
+           // socket.username = userData.username;
+            socket.emit('isOnline', {username: userData.username, status: true});
+        }
+    });
+
     function changeCurrentChat(chat) {
         console.log('Change current chat => ' + chat)
         socket.emit('getMessages', chat);
+        socket.emit('getUsers', chat);
     }
+
 
     function eventListener (event) {
         chatID = event.target.id;
         console.log(chatID);
         changeCurrentChat(chatID);
-    };
+    }
 
 
     function createChat(chatData) {
@@ -93,27 +108,27 @@ $(document).ready(function () {
     });
 
     socket.on('sendMessage', function (msgData) {
-        console.log(msgData);
-        if (msgData.chatID == chatID) {
             var msg = document.createTextNode(msgData.from + ": " + msgData.message);
             var newMsg = document.createElement('li');
             newMsg.appendChild(msg);
             $('#mainChat').append(newMsg);
-        }
     });
 
     socket.on('checkUserForChat', (chatData) => {
-       chatData.members.forEach((el) => {
-          if (el == userData.username) {
-              /*var chatName = document.createTextNode(chatData.name);
-              var newChat = document.createElement('li');
-              newChat.appendChild(chatName);
-              newChat.setAttribute('id', chatData._id);
-              $('#chatList').append(newChat);*/
-              createChat(chatData);
-          }
-       });
+       if (chatData != null) {
+           chatData[0].members.forEach((el) => {
+               if (el == userData.username) {
+                   createChat(chatData);
+               }
+           });
+       } else {
+           alert('Error cant add user');
+       }
     });
+
+    socket.on('userExsist',function (data) {
+        console.log('Cant add user');
+    })
 
 
     $('#addUserToChat').on('click', function () {
@@ -125,8 +140,31 @@ $(document).ready(function () {
         }
         socket.emit('addMember', obj);
         $('#addUser').modal('hide');
+        socket.emit('getUsers', chat);
     });
 
+
+    socket.on('getUsers', function (members) {
+        $('#userList').children().remove();
+        members.forEach((user)=>{
+           var container = document.createElement('div');
+           container.style.color = 'white';
+           var userBlock = document.createElement('span');
+           userBlock.classList = 'fa fa-user-secret';
+           userBlock.innerHTML = user;
+           container.appendChild(userBlock);
+           $('#userList').append(container);
+        });
+    })
+
+
+    socket.on('addMember',function () {
+        console.log('Cant find user');
+    })
+
+
+
+/////////////
 });
 
 

@@ -31,6 +31,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('login', function (userData) { //запрос на логин
+      socket.username = userData.username;
     db.login(userData.username, userData.pass).then(function (data) {
       socket.emit('login', data);
       logger.info('User Connected! \n' + 'User name: ' + data.username);
@@ -66,11 +67,38 @@ io.on('connection', function (socket) {
   });
 
   socket.on('addMember', (data) => {
-    db.addMember(data.chat, data.username).then(function (chatData) {
-      logger.info('User ' + data.username + ' added to chat ' + chatData[0].name)
-       socket.broadcast.emit('checkUserForChat',chatData);
-    });
+    db.findUser(data.username).then(function (user) {
+        if (user) {
+            db.getChatData(data.chat).then(function (chatData) {
+                if (chatData.members.includes(data.username)) {
+                    logger.info('User ' + data.username + ' already exsists in chat ' + data.chat);
+                    socket.emit('userExsist',null);
+                } else {
+                    db.addMember(data.chat, data.username).then(function (chatData) {
+                        logger.info('User ' + data.username + ' added to chat ' + chatData[0].name)
+                        socket.broadcast.emit('checkUserForChat',chatData);
+                    });
+                }
+            });
+        } else {
+          socket.emit('addMember', null);
+        }
+    })
+
+
   });
 
+  socket.on('getUsers', (data) =>{
+    db.getChatData(data).then(function (chatData) {
+        socket.emit('getUsers', chatData.members);
+    })
+  });
+
+  socket.on('isOnline', (state) =>{
+    console.log(state);
+  });
+    socket.on('disconnectMe', (user) =>{
+        console.log(user);
+    });
 
 });
