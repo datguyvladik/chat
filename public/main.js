@@ -27,11 +27,13 @@ function createWindow () {
     mainWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
-    mainWindow.on('closed', function () {
+    mainWindow.on('close', function (e) {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
-        mainWindow = null
+        //mainWindow = null
+        mainWindow.webContents.send('before-close');
+        e.preventDefault();
     })
 }
 
@@ -57,10 +59,6 @@ app.on('activate', function () {
     }
 })
 
-mainWindow.on("close", (e) =>{
-    mainWindow.webContents.send('before-close');
-    e.preventDefault();
-});
 
 /*ipcMain.on('closed', (event) =>{
     app.quit();
@@ -78,6 +76,11 @@ ipcMain.on('synchronous-message', function(event, arg) {
         slashes: true
     }))
 });
+
+ipcMain.on('closed', () =>{
+    mainWindow.destroy();
+    app.quit();
+})
 
 
 global.user ={

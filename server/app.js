@@ -98,7 +98,7 @@ io.on('connection', function (socket) {
     console.log(state);
   });
     socket.on('disconnectMe', (user) =>{
-        console.log(user);
+        console.log('User ' + user + ' disconnected');
     });
 
 });
