@@ -34,6 +34,7 @@ io.on('connection', function (socket) {
       onlineUsers.push(userData.username);
     db.login(userData.username, userData.pass).then(function (data) {
       socket.emit('login', data);
+      socket.broadcast.emit('userConnected', data.username);
       logger.info('User Connected! \n' + 'User name: ' + data.username);
     });
   });
@@ -106,18 +107,18 @@ io.on('connection', function (socket) {
                 parsedMembers.push(memberObj);
             }
         });
-        logger.info('Users array => ' + parsedMembers);
-        console.log(parsedMembers);
+
         socket.emit('getUsers', parsedMembers);
     })
   });
 
   socket.on('isOnline', (state) =>{
-    logger.info(state);
+   // logger.info(state);
   });
     socket.on('disconnectMe', (user) =>{
         logger.info('User ' + user + ' disconnected');
         onlineUsers.splice(onlineUsers.indexOf(user), 1);
+        socket.broadcast.emit('userDisconnected', user);
         console.log(onlineUsers);
     });
 

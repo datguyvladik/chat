@@ -149,6 +149,7 @@ $(document).ready(function () {
         members.forEach((user)=>{
            var container = document.createElement('div');
            container.style.color = 'white';
+           container.setAttribute('id', user.username);
            var userBlock = document.createElement('span');
            userBlock.classList = 'fa fa-user-secret';
            userBlock.innerHTML = user.username;
@@ -158,13 +159,20 @@ $(document).ready(function () {
            container.appendChild(userBlock);
            $('#userList').append(container);
         });
-    })
+    });
 
 
     socket.on('addMember',function () {
         console.log('Cant find user');
-    })
+    });
 
+    socket.on('userDisconnected', (user) => {
+        $('#' + user).css('color', 'white');
+    });
+
+    socket.on('userConnected', (user) =>{
+        $('#' + user).css('color', 'green');
+    });
 
 
 /////////////
