@@ -70,3 +70,7 @@ socket.on('createUser', function (userData) {
     }
 
 });
+
+ipcRenderer.on('before-close', () =>{
+    ipcRenderer.send('closed');
+});

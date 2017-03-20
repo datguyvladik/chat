@@ -151,7 +151,10 @@ $(document).ready(function () {
            container.style.color = 'white';
            var userBlock = document.createElement('span');
            userBlock.classList = 'fa fa-user-secret';
-           userBlock.innerHTML = user;
+           userBlock.innerHTML = user.username;
+           if(user.isOnline){
+               container.style.color = 'green';
+           }
            container.appendChild(userBlock);
            $('#userList').append(container);
         });

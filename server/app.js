@@ -19,7 +19,7 @@ server.listen(config.get('port'), function () {
 });
 
 var io = require('socket.io').listen(server);
-
+var onlineUsers = [];
 io.on('connection', function (socket) {
 
 
@@ -31,13 +31,12 @@ io.on('connection', function (socket) {
   });
 
   socket.on('login', function (userData) { //запрос на логин
-      socket.username = userData.username;
+      onlineUsers.push(userData.username);
     db.login(userData.username, userData.pass).then(function (data) {
       socket.emit('login', data);
       logger.info('User Connected! \n' + 'User name: ' + data.username);
     });
   });
-
 
 
   socket.on('createMessage', function (messageData) { //запрос на сообщение 
@@ -90,15 +89,36 @@ io.on('connection', function (socket) {
 
   socket.on('getUsers', (data) =>{
     db.getChatData(data).then(function (chatData) {
-        socket.emit('getUsers', chatData.members);
+        var parsedMembers = [];
+
+        chatData.members.forEach((member) =>{
+            if(onlineUsers.includes(member)){
+                var memberObj = {
+                    username: member,
+                    isOnline: true
+                }
+                parsedMembers.push(memberObj);
+            } else {
+                var memberObj = {
+                    username: member,
+                    isOnline: false
+                }
+                parsedMembers.push(memberObj);
+            }
+        });
+        logger.info('Users array => ' + parsedMembers);
+        console.log(parsedMembers);
+        socket.emit('getUsers', parsedMembers);
     })
   });
 
   socket.on('isOnline', (state) =>{
-    console.log(state);
+    logger.info(state);
   });
     socket.on('disconnectMe', (user) =>{
-        console.log('User ' + user + ' disconnected');
+        logger.info('User ' + user + ' disconnected');
+        onlineUsers.splice(onlineUsers.indexOf(user), 1);
+        console.log(onlineUsers);
     });
 
 });
