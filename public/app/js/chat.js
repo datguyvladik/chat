@@ -174,6 +174,7 @@ $(document).ready(function () {
         $('#' + user).css('color', 'green');
     });
 
+    
 
 /////////////
 });
