@@ -15,15 +15,18 @@ $(document).ready(function () {
     };
 
 
-    ipcRenderer.on('before-close', () =>{
-       socket.emit('disconnectMe', userData.username);
-       ipcRenderer.send('closed');
+    ipcRenderer.on('before-close', () => {
+        socket.emit('disconnectMe', userData.username);
+        ipcRenderer.send('closed');
     });
 
     socket.on('connect', () => {
-        if(socket.connected){
-           // socket.username = userData.username;
-            socket.emit('isOnline', {username: userData.username, status: true});
+        if (socket.connected) {
+            // socket.username = userData.username;
+            socket.emit('isOnline', {
+                username: userData.username,
+                status: true
+            });
         }
     });
 
@@ -34,7 +37,7 @@ $(document).ready(function () {
     }
 
 
-    function eventListener (event) {
+    function eventListener(event) {
         chatID = event.target.id;
         console.log(chatID);
         changeCurrentChat(chatID);
@@ -55,7 +58,7 @@ $(document).ready(function () {
 
             var addUser = document.createElement('button');
             addUser.className = 'fa fa-plus';
-            addUser.onclick = () =>{
+            addUser.onclick = () => {
                 $('#addUser').modal('toggle');
             };
             contatiner.appendChild(addUser);
@@ -69,15 +72,13 @@ $(document).ready(function () {
         console.log(messageData);
         $('#mainChat').children().remove();
         messageData.forEach(function (element) {
-            var msg = document.createTextNode(element.from + ": " + element.message);
-            var newMsg = document.createElement('li');
-            newMsg.appendChild(msg);
-            $('#mainChat').append(newMsg);
+            var msg = '<li>'+element.from + ":" + element.message+"/li";
+            $('#mainChat').append(msg);
         });
     });
 
     $('#sendMsg').on('click', function () {
-        var msg = $('#msg').val();
+        var msg = $('#msg').html();
         var msgToServer = {
             message: msg,
             chatID: chatID,
@@ -96,37 +97,52 @@ $(document).ready(function () {
         socket.emit('createChat', chatData);
     });
 
+    $('#smile').on('click', function () {
+        if ($('#emoticonMenu').hasClass('hidden')) 
+        {
+            $('#emoticonMenu').removeClass('hidden');
+        } else {
+            $('#emoticonMenu').addClass('hidden');
+        }
+            
+    });
+
+    $("#emoticonMenu span").on('click', function(event){
+        var smile = event.target;
+        $(smile).clone().appendTo('#msg');
+    })
+
+
+
     socket.emit('getChats', userData.username); //запрос на получение чатов для юзера
 
     socket.on('getChats', function (chatData) {
-       createChat(chatData);
+        createChat(chatData);
     });
 
     socket.on('chatCreated', function (chat) {
-      createChat(chat);
+        createChat(chat);
         $('#myModal').modal('hide');
     });
 
     socket.on('sendMessage', function (msgData) {
-            var msg = document.createTextNode(msgData.from + ": " + msgData.message);
-            var newMsg = document.createElement('li');
-            newMsg.appendChild(msg);
-            $('#mainChat').append(newMsg);
+        var msg = '<li>'+msgData.from + ": " + msgData.message+'</li>';
+        $('#mainChat').append(msg);
     });
 
     socket.on('checkUserForChat', (chatData) => {
-       if (chatData != null) {
-           chatData[0].members.forEach((el) => {
-               if (el == userData.username) {
-                   createChat(chatData);
-               }
-           });
-       } else {
-           alert('Error cant add user');
-       }
+        if (chatData != null) {
+            chatData[0].members.forEach((el) => {
+                if (el == userData.username) {
+                    createChat(chatData);
+                }
+            });
+        } else {
+            alert('Error cant add user');
+        }
     });
 
-    socket.on('userExsist',function (data) {
+    socket.on('userExsist', function (data) {
         console.log('Cant add user');
     })
 
@@ -146,37 +162,37 @@ $(document).ready(function () {
 
     socket.on('getUsers', function (members) {
         $('#userList').children().remove();
-        members.forEach((user)=>{
-           var container = document.createElement('div');
-           container.style.color = 'white';
-           container.setAttribute('id', user.username);
-           var userBlock = document.createElement('span');
-           userBlock.classList = 'fa fa-user-secret';
-           userBlock.innerHTML = user.username;
-           if(user.isOnline){
-               container.style.color = 'green';
-           }
-           container.appendChild(userBlock);
-           $('#userList').append(container);
+        members.forEach((user) => {
+            var container = document.createElement('div');
+            container.style.color = 'white';
+            var userBlock = document.createElement('span');
+            userBlock.classList = 'fa fa-user-secret';
+            userBlock.innerHTML = user.username;
+            if (user.isOnline) {
+                container.style.color = 'green';
+            }
+            container.appendChild(userBlock);
+            $('#userList').append(container);
         });
-    });
+    })
 
 
-    socket.on('addMember',function () {
+    socket.on('addMember', function () {
         console.log('Cant find user');
-    });
+    })
 
     socket.on('userDisconnected', (user) => {
         $('#' + user).css('color', 'white');
     });
 
-    socket.on('userConnected', (user) =>{
+    socket.on('userConnected', (user) => {
         $('#' + user).css('color', 'green');
     });
 
-    
 
-/////////////
+
+
+    /////////////
 });
 
 
