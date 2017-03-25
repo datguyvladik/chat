@@ -93,3 +93,15 @@ animation: AnimationName 28s ease infinite;
 .modal{
     top: calc(50vh - 233px)!important;
 }
+
+.emoticonMenu {
+    position: absolute;
+    top:81vh;
+    left: 95vh;
+    width: 17vh;
+}
+
+.hidden {
+    display: none;
+    
+}
