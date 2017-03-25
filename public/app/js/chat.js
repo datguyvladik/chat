@@ -1,12 +1,9 @@
-var config = require('../config');
-
-var port = config.port;
-var socket = io.connect(config.host + port);
-var electron = require('electron');
-const ipcRenderer = require('electron').ipcRenderer;
-
-
 $(document).ready(function () {
+    let config = require('../config');
+    let port = config.port;
+    let socket = io.connect(config.host + port);
+    let electron = require('electron');
+    let ipcRenderer = require('electron').ipcRenderer;
     let chatID;
     let userData = {
         username: electron.remote.getGlobal('user').username,
@@ -44,16 +41,16 @@ $(document).ready(function () {
     function createChat(chatData) {
         chatData.forEach((chat) => {
 
-            var contatiner = document.createElement('div');
+            let contatiner = document.createElement('div');
             contatiner.classList = 'chat';
 
-            var chatName = document.createElement('span');
+            let chatName = document.createElement('span');
             chatName.setAttribute('id', chat._id);
             chatName.innerHTML = chat.name;
             chatName.style.display = 'inline-block';
             contatiner.appendChild(chatName);
 
-            var addUser = document.createElement('button');
+            let addUser = document.createElement('button');
             addUser.className = 'fa fa-plus';
             addUser.onclick = () =>{
                 $('#addUser').modal('toggle');
@@ -66,19 +63,20 @@ $(document).ready(function () {
     }
 
     socket.on('getMessages', (messageData) => {
+        let mainChat = $('#mainChat');
         console.log(messageData);
-        $('#mainChat').children().remove();
+        mainChat.children().remove();
         messageData.forEach(function (element) {
-            var msg = document.createTextNode(element.from + ": " + element.message);
-            var newMsg = document.createElement('li');
+            let msg = document.createTextNode(element.from + ": " + element.message);
+            let newMsg = document.createElement('li');
             newMsg.appendChild(msg);
-            $('#mainChat').append(newMsg);
+            mainChat.append(newMsg);
         });
     });
 
     $('#sendMsg').on('click', function () {
-        var msg = $('#msg').val();
-        var msgToServer = {
+        let msg = $('#msg').val();
+        let msgToServer = {
             message: msg,
             chatID: chatID,
             from: userData.username
@@ -89,10 +87,10 @@ $(document).ready(function () {
 
 
     $('#createChatBtn').on('click', function () {
-        var chatData = {
+        let chatData = {
             chatname: $('#createChatInput').val(),
             members: userData.username
-        }
+        };
         socket.emit('createChat', chatData);
     });
 
@@ -108,8 +106,8 @@ $(document).ready(function () {
     });
 
     socket.on('sendMessage', function (msgData) {
-            var msg = document.createTextNode(msgData.from + ": " + msgData.message);
-            var newMsg = document.createElement('li');
+            let msg = document.createTextNode(msgData.from + ": " + msgData.message);
+            let newMsg = document.createElement('li');
             newMsg.appendChild(msg);
             $('#mainChat').append(newMsg);
     });
@@ -132,12 +130,12 @@ $(document).ready(function () {
 
 
     $('#addUserToChat').on('click', function () {
-        var chat = chatID;
-        var username = $('#specUserToAdd').val();
-        var obj = {
+        let chat = chatID;
+        let username = $('#specUserToAdd').val();
+        let obj = {
             chat: chat,
             username: username
-        }
+        };
         socket.emit('addMember', obj);
         $('#addUser').modal('hide');
         socket.emit('getUsers', chat);
@@ -145,19 +143,20 @@ $(document).ready(function () {
 
 
     socket.on('getUsers', function (members) {
-        $('#userList').children().remove();
+        let userList =$('#userList');
+            userList.children().remove();
         members.forEach((user)=>{
-           var container = document.createElement('div');
+           let container = document.createElement('div');
            container.style.color = 'white';
            container.setAttribute('id', user.username);
-           var userBlock = document.createElement('span');
+           let userBlock = document.createElement('span');
            userBlock.classList = 'fa fa-user-secret';
            userBlock.innerHTML = user.username;
            if(user.isOnline){
                container.style.color = 'green';
            }
            container.appendChild(userBlock);
-           $('#userList').append(container);
+           userList.append(container);
         });
     });
 
@@ -174,7 +173,7 @@ $(document).ready(function () {
         $('#' + user).css('color', 'green');
     });
 
-    
+
 
 /////////////
 });
