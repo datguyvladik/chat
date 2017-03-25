@@ -18,9 +18,12 @@ $(document).ready(function () {
     });
 
     socket.on('connect', () => {
-        if(socket.connected){
-           // socket.username = userData.username;
-            socket.emit('isOnline', {username: userData.username, status: true});
+        if (socket.connected) {
+            // socket.username = userData.username;
+            socket.emit('isOnline', {
+                username: userData.username,
+                status: true
+            });
         }
     });
 
@@ -31,7 +34,7 @@ $(document).ready(function () {
     }
 
 
-    function eventListener (event) {
+    function eventListener(event) {
         chatID = event.target.id;
         console.log(chatID);
         changeCurrentChat(chatID);
@@ -52,7 +55,7 @@ $(document).ready(function () {
 
             let addUser = document.createElement('button');
             addUser.className = 'fa fa-plus';
-            addUser.onclick = () =>{
+            addUser.onclick = () => {
                 $('#addUser').modal('toggle');
             };
             contatiner.appendChild(addUser);
@@ -66,7 +69,7 @@ $(document).ready(function () {
         console.log(messageData);
         $('#mainChat').children().remove();
         messageData.forEach(function (element) {
-            var msg = '<li>'+element.from + ":" + element.message+"/li";
+            var msg = '<li>' + element.from + ":" + element.message + "</li>";
             $('#mainChat').append(msg);
         });
     });
@@ -92,8 +95,7 @@ $(document).ready(function () {
     });
 
     $('#smile').on('click', function () {
-        if ($('#emoticonMenu').hasClass('hidden'))
-        {
+        if ($('#emoticonMenu').hasClass('hidden')) {
             $('#emoticonMenu').removeClass('hidden');
         } else {
             $('#emoticonMenu').addClass('hidden');
@@ -101,7 +103,7 @@ $(document).ready(function () {
 
     });
 
-    $("#emoticonMenu span").on('click', function(event){
+    $("#emoticonMenu span").on('click', function (event) {
         var smile = event.target;
         $(smile).clone().appendTo('#msg');
     })
@@ -120,8 +122,10 @@ $(document).ready(function () {
     });
 
     socket.on('sendMessage', function (msgData) {
-        var msg = '<li>'+msgData.from + ": " + msgData.message+'</li>';
-        $('#mainChat').append(msg);
+        if (msgData.chatID == chatID) {
+            var msg = '<li>' + msgData.from + ": " + msgData.message + '</li>';
+            $('#mainChat').append(msg);
+        }
     });
 
     socket.on('checkUserForChat', (chatData) => {
@@ -155,25 +159,25 @@ $(document).ready(function () {
 
 
     socket.on('getUsers', function (members) {
-        let userList =$('#userList');
-            userList.children().remove();
-        members.forEach((user)=>{
-           let container = document.createElement('div');
-           container.style.color = 'white';
-           container.setAttribute('id', user.username);
-           let userBlock = document.createElement('span');
-           userBlock.classList = 'fa fa-user-secret';
-           userBlock.innerHTML = user.username;
-           if(user.isOnline){
-               container.style.color = 'green';
-           }
-           container.appendChild(userBlock);
-           userList.append(container);
+        let userList = $('#userList');
+        userList.children().remove();
+        members.forEach((user) => {
+            let container = document.createElement('div');
+            container.style.color = 'white';
+            container.setAttribute('id', user.username);
+            let userBlock = document.createElement('span');
+            userBlock.classList = 'fa fa-user-secret';
+            userBlock.innerHTML = user.username;
+            if (user.isOnline) {
+                container.style.color = 'green';
+            }
+            container.appendChild(userBlock);
+            userList.append(container);
         });
     });
 
 
-    socket.on('addMember',function () {
+    socket.on('addMember', function () {
         console.log('Cant find user');
     });
 
@@ -181,23 +185,11 @@ $(document).ready(function () {
         $('#' + user).css('color', 'white');
     });
 
-    socket.on('userConnected', (user) =>{
+    socket.on('userConnected', (user) => {
         $('#' + user).css('color', 'green');
     });
 
 
 
-/////////////
+    /////////////
 });
-
-
-
-/*
-*TODO MAX:
-1)список юзеров онлайн
-2)если админ удаляет сообщения из DOM
-
-*TODO VLAD:
-1)добалвять новый чат на клиенте
-2)сообщения в разные чаты
-*/
