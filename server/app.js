@@ -20,8 +20,18 @@ server.listen(config.get('port'), function () {
 
 var io = require('socket.io').listen(server);
 var onlineUsers = [];
+var peerList = [];
 io.on('connection', function (socket) {
 
+
+  socket.on('peerSend', function (data) {
+      peerList.forEach(function (element) {
+         if(element.username == data.username){
+             element = data;
+         }
+      });
+      peerList.push(data);
+  });
 
   socket.on('createUser', function (userData) { //запрос на регистрацию
     db.createUser(userData.username, userData.pass).then(function (data) {
@@ -88,22 +98,38 @@ io.on('connection', function (socket) {
 
   });
 
+    function findPeer(username) {
+        peerList.forEach(function (element) {
+            if(element.username == username){
+                console.log('Element => ' + element.username);
+                console.log('Username => ' + username);
+                this.peerID = element.peerID;
+                return peerID
+            } else {
+                return null;
+            }
+        });
+        return this.peerID;
+    }
+
   socket.on('getUsers', (data) =>{
     db.getChatData(data).then(function (chatData) {
-        var parsedMembers = [];
-
+        let parsedMembers = [];
         chatData.members.forEach((member) =>{
+            let peerID = findPeer(member);
+            console.log('GetUsers peer id => ' + peerID);
             if(onlineUsers.includes(member)){
-                var memberObj = {
+                let memberObj = {
                     username: member,
-                    isOnline: true
-                }
+                    isOnline: true,
+                    peer: findPeer(member)
+                };
                 parsedMembers.push(memberObj);
             } else {
-                var memberObj = {
+                let memberObj = {
                     username: member,
                     isOnline: false
-                }
+                };
                 parsedMembers.push(memberObj);
             }
         });
