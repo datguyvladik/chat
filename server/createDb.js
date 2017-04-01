@@ -2,6 +2,7 @@ var mongoose = require('./lib/mongoose');
 var User = require('./models/user').User;
 var Chat = require('./models/chat').Chat;
 var Message = require('./models/message').Message;
+var File = require('./models/file').File;
 mongoose.Promise = Promise;
 
 function createUser(username, pass) { //создать юзера
@@ -68,10 +69,10 @@ function findAllUsers() { //найти всех юзеров
 
 function findUser(username) {
     return User.findOne({
-        username: username
-    })
+            username: username
+        })
         .then(function (user) {
-            if(user) {
+            if (user) {
                 return user;
             } else {
                 return null;
@@ -170,18 +171,18 @@ function getChatData(chatName) { //получить дату чата
 
 function getChatDataforUser(username) {
     return Chat.find({
-        members: username
-    })
-    .then(function (chat) {
-        if (chat) {
-            return chat;
-        } else {
-            return null;
-        }
-    })
-    .catch(function (err) {
-        console.log(err);
-    })
+            members: username
+        })
+        .then(function (chat) {
+            if (chat) {
+                return chat;
+            } else {
+                return null;
+            }
+        })
+        .catch(function (err) {
+            console.log(err);
+        })
 }
 
 
@@ -207,10 +208,10 @@ function createMessage(message, chatID, from) { //создать сообщен�
         })
 }
 
-function getMessages(chatName) {  //получить данные определенного чата
+function getMessages(chatName) { //получить данные определенного чата
     return Message.find({
-      chatID:chatName
-    })
+            chatID: chatName
+        })
         .then(function (messages) {
             if (messages) {
                 return messages;
@@ -223,6 +224,41 @@ function getMessages(chatName) {  //получить данные определ
         })
 }
 
+function saveFile(fileName, fileData) {
+    var file = new File({
+        name: fileName,
+        data: fileData
+    });
+    return file.save()
+        .then(function (file) {
+            if (file) {
+                return file;
+            } else {
+                return null;
+            }
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+}
+
+function getFile(fileID) {
+    return File.findOne({
+            _id: fileID
+        })
+        .then(function (file) {
+            if (file) {
+                return file;
+            } else {
+                return null;
+            }
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+}
+
+
 
 module.exports.createUser = createUser;
 module.exports.login = login;
@@ -234,3 +270,5 @@ module.exports.getChatData = getChatData;
 module.exports.getChatDataforUser = getChatDataforUser;
 module.exports.createMessage = createMessage;
 module.exports.getMessages = getMessages;
+module.exports.saveFile = saveFile;
+module.exports.getFile = getFile;

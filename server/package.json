@@ -10,6 +10,8 @@
     "ejs": "*",
     "ejs-locals": "^1.0.2",
     "express": "4.15.0",
+    "mongoose": "^4.9.1",
+    "mongoose-gridfs": "^0.1.0",
     "winston": "^2.3.1"
   }
 }

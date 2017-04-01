@@ -105,3 +105,23 @@ animation: AnimationName 28s ease infinite;
     display: none;
     
 }
+
+#msg.hover {
+    background: #ddd;
+    border-color: #aaa;
+}
+
+#msg.error {
+    background: #faa;
+    border-color: #f00;
+}
+
+#msg.drop {
+    background: #afa;
+    border-color: #0f0;
+}
+
+.imgDom img{
+    width: 300px;
+    height: 200px
+}
