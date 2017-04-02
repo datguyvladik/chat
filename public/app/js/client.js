@@ -15,8 +15,8 @@ let clientModule = (() => {
             alert('error');
         } else {
             let userData = {
-                username: document.getElementById('inputLogin').value,
-                pass: document.getElementById('inputPassword').value
+                username: document.getElementById('username').value,
+                pass: document.getElementById('userpass').value
             };
             config.socket.emit('login', userData);
 
@@ -32,8 +32,8 @@ let clientModule = (() => {
 
     let createNewUser = () => {
         let userData = {
-            username: document.getElementById('regLog').value,
-            pass: document.getElementById('regPass').value
+            username: document.getElementById('username').value,
+            pass: document.getElementById('userpass').value
         };
         config.socket.emit('createUser', userData);
     };
@@ -80,6 +80,34 @@ let clientModule = (() => {
         }
     };
 
+    let checkUsername = () => {
+        let user = $('#username-container');
+        if (user.hasClass('signin')) {
+            let parsedUsername = $('#username').val().trim();
+            config.socket.emit('userExist', parsedUsername);
+        }
+    };
+
+    let goToPass = () => {
+        $('#username-container').fadeOut('slow', function () {
+            $('#password').fadeIn('slow');
+            $('#userpass').focus();
+            $('#password').addClass('current');
+            $('#username-container').removeClass('current');
+        });
+    };
+
+
+    let getUserChoise = (e) => {
+        let userContainer = $('#username-container');
+        userContainer.addClass(e.target.id);
+        $('#password').addClass(e.target.id);
+        $('#ch').hide();
+        $('#username').focus();
+        userContainer.fadeIn('slow');
+        $('.info').fadeIn('slow');
+    };
+
     return {
         login,
         loginListener,
@@ -87,7 +115,11 @@ let clientModule = (() => {
         passwordConfimation,
         loginRegSwitch,
         onLogin,
-        onCreateUser
+        onCreateUser,
+        checkUsername,
+        getUserChoise,
+        goToPass
+
     }
 })();
 
@@ -95,9 +127,40 @@ $('#btn-login').on('click', clientModule.loginListener);
 $('#btn-reg').on('click', clientModule.createNewUser);
 $('#confPass').on("input propertychange", clientModule.passwordConfimation);
 $('#switch').on('click', clientModule.loginRegSwitch);
+$(document).keypress((e) => {
+    if (e.which == 13) {
+        if ($('#password').hasClass('current')) {
+
+            if ($('#password').hasClass('signin')) {
+                clientModule.loginListener();
+            } else {
+                clientModule.createNewUser();
+            }
+        }
+
+        if ($('#username-container').hasClass('current')) {
+            if ($('#username-container').hasClass('signup')) {
+                config.socket.emit('userExist', $('#username').val());
+            } else {
+                clientModule.goToPass();
+            }
+        }
+
+
+    }
+});
 config.socket.on('login', clientModule.onLogin);
 config.socket.on('createUser', clientModule.onCreateUser);
+config.socket.on('userExist', function (data) {
+    if (data) {
+        $('#username-container span').css('color', 'red');
+    }
+    else {
+        clientModule.goToPass();
+    }
+});
 config.ipcRenderer.on('before-close', () => {
     config.ipcRenderer.send('closed');
 });
 
+$('#ch').on('click', clientModule.getUserChoise);

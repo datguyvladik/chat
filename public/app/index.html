@@ -6,7 +6,11 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="css/login.css" rel="stylesheet" type="text/css">
     <link href="css/app.css" rel="stylesheet" type="text/css">
+    <script src="http://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/EasePack.min.js"></script>
+    <script src="http://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/rAF.js"></script>
+    <script src="http://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/TweenLite.min.js"></script>
     <script>
         window.$ = window.jQuery = require('jquery');
     </script>
@@ -14,45 +18,26 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="main">
 
-        <div id="login" class="abs-center">
-                <div class="form-group">
-                    <label for="exampleInputEmail1" style="color: white">Username</label>
-                    <input type="email" class="form-control" id="inputLogin" placeholder="Email" required="required">
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1" style="color: white">Password</label>
-                    <input type="password" class="form-control" id="inputPassword" placeholder="Password" required="required">
-                </div>
-                <button id="btn-login" type="submit" class="btn btn-default">Submit</button>
-        </div>
-
-        <div id="registration" class="abs-center" style="display: none">
-
-            <div class="form-group">
-                <label for="exampleInputEmail1" style="color: white">Username</label>
-                <input type="email" class="form-control" id="regLog" placeholder="Email" required="required">
-            </div>
-            <div class="form-group">
-                <label for="exampleInputPassword1" style="color: white">Password</label>
-                <input type="password" class="form-control" id="regPass" placeholder="Password" required="required">
-            </div>
-            <div class="form-group has-feedback">
-                <label for="exampleInputPassword1" style="color: white">Confirm password password</label>
-                <input type="password" class="form-control" id="confPass" placeholder="Password" required="required">
-                <i id="ok-valid" class="glyphicon glyphicon-ok form-control-feedback" style="display: none"></i>
-            </div>
-            <button id="btn-reg" type="button" class="btn btn-default">Submit</button>
-
-        </div>
-        <button id="switch" type="button" class="btn btn-default btn-lg">
-            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-        </button>
+<div id="ch" class="choise">
+    <div id="login">
+        <a id="signin" href="#" class="btn btn-sm animated-button victoria-one">Login</a>
     </div>
+    <div id="reg">
+            <a id="signup" href="#" class="btn btn-sm animated-button victoria-one">Sign Up</a>
+    </div>
+</div>
 
+<div id="username-container" class="content current" style="display: none">
+    <span> Enter you username </span>
+    <input id="username" type="text" class="focus"   />
+</div>
+<div id="password" class="pass content" style="display: none">
+    What is your Password?
+    <input id="userpass" type="password" class="cool"  />
+</div>
+<p class="info" style="display: none; margin-top: 10px">Press enter continue.</p>
 
     <script defer src="js/client.js"></script>
-
 </body>
 </html>

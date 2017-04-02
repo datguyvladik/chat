@@ -29,14 +29,6 @@ animation: AnimationName 28s ease infinite;
     100%{background-position:0% 50%}
 }
 
-.abs-center{
-    position: absolute;
-    background: transparent;
-    top: calc(50% - 150px);
-    left: calc(50% - 200px);
-    height: 300px;
-    width: 400px;
-}
 
 .chat-list-style{
     border-radius: 15px;

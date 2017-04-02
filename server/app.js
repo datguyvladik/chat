@@ -45,6 +45,12 @@ io.on('connection', function (socket) {
     });
   });
 
+  socket.on('userExist', function (user) {
+     db.findUser(user).then(function (data) {
+         socket.emit('userExist', data);
+     })
+  });
+
 
   socket.on('createMessage', function (messageData) { //запрос на сообщение 
     db.createMessage(messageData.message, messageData.chatID, messageData.from).then(function (data) {
