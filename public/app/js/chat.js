@@ -6,6 +6,8 @@ $(document).ready(function () {
     let dl = require('delivery');
     let delivery = dl.listen(socket);
     let ipcRenderer = require('electron').ipcRenderer;
+    var remote = require('electron').remote;
+    var windowManager = remote.require('electron-window-manager');
     let chatID;
     let fileID;
     let peer = new Peer({
@@ -124,7 +126,10 @@ $(document).ready(function () {
 
 
     function eventListener(event) {
-        chatID = event.target.id;
+        $('#' + chatID).removeClass('active');
+        chatID = event.currentTarget.id;
+        let chat = event.currentTarget;
+        $(chat).addClass('active');
         changeCurrentChat(chatID);
     }
 
@@ -136,7 +141,7 @@ $(document).ready(function () {
             contatiner.classList = 'chat';
 
             let chatName = document.createElement('span');
-            chatName.setAttribute('id', chat._id);
+            contatiner.setAttribute('id', chat._id);
             chatName.innerHTML = chat.name;
             chatName.style.display = 'inline-block';
             contatiner.appendChild(chatName);
@@ -147,7 +152,7 @@ $(document).ready(function () {
                 $('#addUser').modal('toggle');
             };
             contatiner.appendChild(addUser);
-            chatName.addEventListener('click', eventListener);
+            contatiner.addEventListener('click', eventListener);
             $('#chatList').append(contatiner);
 
         });
@@ -157,19 +162,35 @@ $(document).ready(function () {
         console.log(messageData);
         $('#mainChat').children().remove();
         messageData.forEach(function (element) {
-            var msg = '<li>' + element.from + ":" + element.message + "</li>";
-            $('#mainChat').append(msg);
+            if(element.from === userData.username){
+                var msg = '<li class="msg-user">' + element.message + "</li>";
+                $('#mainChat').append(msg);
+                var chatContainer = $('.send-control');
+                chatContainer.scrollTop(chatContainer[0].scrollHeight);
+            } else {
+                var msg = '<li class="msg-recived">' + element.from + ":" + element.message + "</li>";
+                $('#mainChat').append(msg);
+                var chatContainer = $('.send-control');
+                chatContainer.scrollTop(chatContainer[0].scrollHeight);
+            }
         });
     });
 
-    $('#sendMsg').on('click', function () {
-        var msg = $('#msg').html();
-        var msgToServer = {
-            message: msg,
-            chatID: chatID,
-            from: userData.username
-        }
-        socket.emit('createMessage', msgToServer);
+    $(document).keypress((e) =>{
+       if(e.which === 13){
+           e.preventDefault();
+           var messageBox = $('#msg');
+           var msg = messageBox.html();
+           var msgToServer = {
+               message: msg,
+               chatID: chatID,
+               from: userData.username
+           }
+           socket.emit('createMessage', msgToServer);
+           var chatContainer = $('.send-control');
+           chatContainer.scrollTop(chatContainer[0].scrollHeight);
+           messageBox.html('');
+       }
     });
 
 
@@ -182,8 +203,14 @@ $(document).ready(function () {
     });
 
     $('#smile').on('click', function () {
-        if ($('#emoticonMenu').hasClass('hidden')) {
-            $('#emoticonMenu').removeClass('hidden');
+        let emojiMenu = $('#emoticonMenu');
+        if (emojiMenu.hasClass('hidden')) {
+            emojiMenu.removeClass('hidden');
+            let emojiPosition = getEmojiMenuPositon();
+            emojiMenu.css('position', 'absolute');
+            emojiMenu.css('top', emojiPosition.top);
+            emojiMenu.css('right', emojiPosition.right);
+
         } else {
             $('#emoticonMenu').addClass('hidden');
         }
@@ -193,6 +220,7 @@ $(document).ready(function () {
     $("#emoticonMenu span").on('click', function (event) {
         var smile = event.target;
         $(smile).clone().appendTo('#msg');
+        $('#emoticonMenu').addClass('hidden');
     });
 
 
@@ -209,8 +237,18 @@ $(document).ready(function () {
 
     socket.on('sendMessage', function (msgData) {
         if (msgData.chatID == chatID) {
-            var msg = '<li>' + msgData.from + ": " + msgData.message + '</li>';
-            $('#mainChat').append(msg);
+            if(msgData.from === userData.username){
+                var msg = '<li class="msg-user">' + msgData.message + '</li>';
+                $('#mainChat').append(msg);
+                var chatContainer = $('.send-control');
+                chatContainer.scrollTop(chatContainer[0].scrollHeight);
+            }else {
+                var msg = '<li>' + msgData.from + ": " + msgData.message + '</li>';
+                $('#mainChat').append(msg);
+                var chatContainer = $('.send-control');
+                chatContainer.scrollTop(chatContainer[0].scrollHeight);
+            }
+
         }
     });
 
@@ -255,10 +293,18 @@ $(document).ready(function () {
             userBlock.classList = 'fa fa-user-secret';
             userBlock.innerHTML = user.username;
             userBlock.setAttribute('data-peer', user.peer);
+            container.appendChild(userBlock);
             if (user.isOnline) {
                 container.style.color = 'green';
+                let callBtn = document.createElement('button');
+                callBtn.classList.add('peer-call');
+                callBtn.innerHTML = 'Call';
+                callBtn.addEventListener('click', function () {
+                   var callWindow = windowManager.createNew('Call', 'Call me maybe');
+                   callWindow.open();
+                });
+                container.appendChild(callBtn);
             }
-            container.appendChild(userBlock);
             userList.append(container);
         });
     });
@@ -323,6 +369,15 @@ $(document).ready(function () {
         $('#mainChat').append(imgDom);
     });
 
+    function getEmojiMenuPositon() {
+        let textAreaContainer = document.getElementsByClassName('text-area-inner');
+        let textAreaPositionTop = textAreaContainer[0].offsetTop;
+        let textAreaPostiionRight = textAreaContainer[0].offsetLeft;
+        return emojiPostion = {
+            top: textAreaPositionTop - (textAreaPositionTop + 169) + 'px',
+            right: textAreaPostiionRight - (textAreaPostiionRight) + 'px'
+        }
 
+    }
     /////////////
 });

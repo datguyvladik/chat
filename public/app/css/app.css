@@ -1,7 +1,11 @@
 html, body{
     height: 100vh;
     margin: 0;
+    font-family: "HelveticaNeue-Medium", "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background:black;
+    color: white;
 }
+
 .main{
 min-width: 100%;
 min-height: 100%;
@@ -59,8 +63,27 @@ animation: AnimationName 28s ease infinite;
     overflow-y: scroll;
 }
 
-.chat-item{
+.chat button{
+    display: none;
+    float: right;
+    border: none;
+    background-color: transparent;
+    color: black;
+    outline: none;
+}
 
+.chat{
+    margin: 10px;
+    cursor: pointer;
+}
+
+.chat:hover {
+    color: #D24D57;
+}
+
+.chat:hover button{
+    display: inline-block;
+    color: #D24D57;
 }
 
 .chat-name{
@@ -86,11 +109,29 @@ animation: AnimationName 28s ease infinite;
     top: calc(50vh - 233px)!important;
 }
 
-.emoticonMenu {
-    position: absolute;
-    top:81vh;
-    left: 95vh;
-    width: 17vh;
+.emoji-toggle {
+    position: relative;
+    margin: -12px -1px -12px 10px;
+    height: 59px;
+    width: 53px;
+    cursor: pointer;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    font-size: 42px;
+}
+
+.emoji-toggle:hover{
+    color: orange;
+}
+
+.emoticonMenu span {
 }
 
 .hidden {
@@ -116,4 +157,121 @@ animation: AnimationName 28s ease infinite;
 .imgDom img{
     width: 300px;
     height: 200px
+}
+
+.border-left{
+    font-size: 22px;
+    border-left: 2px solid #D24D57;
+}
+.border-right{
+    border-right: 2px solid #D24D57;
+    font-size: 18px;
+}
+ul{
+    margin: 0;
+    padding: 0;
+}
+
+#mainChat{
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+
+#mainChat li{
+    padding: 10px;
+    list-style: none;
+    font-size: 25px;
+    word-break: break-all;
+}
+
+.msg-user{
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+#msg{
+ font-size: 16px;
+}
+
+.heigth-control {
+    height: 100vh;
+}
+
+.send-control {
+    height: calc(100vh - 95px);
+    border-bottom: 5px solid black;
+}
+
+.peer-call{
+    float: right;
+}
+.text-area-inner{
+    display: flex;
+    position: relative;
+    padding: 12px 10px;
+    border-radius: 3px;
+    border: 2px solid #dadddf;
+    box-sizing: border-box;
+}
+
+.chat-input{
+    height: auto;
+    overflow: hidden;
+    color: white;
+    background-color: transparent;
+    resize: none;
+    outline: none;
+    border: none;
+    font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 18px;
+    max-height: 144px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.emoticonMenu{
+    display: inline-block;
+    width: 300px;
+    height: auto;
+    font-size: 20px;
+    border-radius: 3px;
+    border: 2px solid #dadddf;
+    box-sizing: border-box;
+    padding: 8px 5px;
+    background-color: lavenderblush;
+}
+
+.upload-toogle{
+    position: relative;
+    margin: -12px 20px -12px -1px;
+    height: 59px;
+    width: 53px;
+    cursor: pointer;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    font-size: 42px;
+    color: darkgray;
+}
+
+.upload-toogle:hover{
+    color: white;
+}
+
+.active{
+    color: #D24D57;
+}
+
+[contentEditable=true]:empty:not(:focus):before{
+    content:attr(data-text)
 }

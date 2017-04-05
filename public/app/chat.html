@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://use.fontawesome.com/8616111e70.js"></script>
     <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="css/app.css" rel="stylesheet" type="text/css">
@@ -15,16 +16,6 @@
     </script>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="js/socket.io.js"></script>
-    <style>
-        .heigth-control {
-            height: 100vh;
-        }
-
-        .send-control {
-            height: calc(100vh - 70px);
-            border-bottom: 5px solid black;
-        }
-    </style>
 </head>
 
 <body>
@@ -32,14 +23,14 @@
     <div class="container-fluid">
         <!-- If Needed Left and Right Padding in 'md' and 'lg' screen means use container class -->
         <div class="row heigth-control">
-            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 heigth-control chat-list">
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 heigth-control chat-list border-right">
+                <div class="">
+                    <div style="" id="chatCreate" class="crete-chat" data-toggle="modal" data-target="#myModal">
+                        <i class="fa fa-comments" aria-hidden="true"></i>
+                        <span>Create new chat</span>
+                        <span style="float: right">+</span>
+                    </div>
                 <div id="chatList">
-                    <div class="">
-                        <div id="chatCreate" class="crete-chat" data-toggle="modal" data-target="#myModal">
-                            <i class="fa fa-comments" aria-hidden="true"></i>
-                            <span>Create new chat</span>
-                            <span style="float: right">+</span>
-                        </div>
                     </div>
 
                 </div>
@@ -88,13 +79,73 @@
                         </div>
                     </ul>
                 </div>
-                <div style="text-align: center">
-                    <div contenteditable="true" id = 'msg' style="border: 1px solid red; width: 200px; height: 20px; display: inline-block"></div>
-                    <button id="sendMsg">Send msg</button>
-                    <i class="fa fa-smile-o" aria-hidden="true" id='smile'></i>
+                <div class="text-area-inner">
+                       <!-- <div contenteditable="true"  id = 'msg' style="flex: 1 1 ; border: 1px solid red; display: inline-block"></div>-->
+                        <i class="fa fa-upload upload-toogle" aria-hidden="true"></i>
+                        <div data-text="Enter text here" contenteditable="true" id="msg" class="chat-input"></div>
+                        <i  class="fa fa-smile-o emoji-toggle" aria-hidden="true" id='smile'></i>
+                    <div class="emoticonMenu hidden" id="emoticonMenu">
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:-)</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:)</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:o)</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:c)</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:^)</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:-D</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:-(</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:-9</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">;-)</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:-P</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:-p</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:-Þ</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:-b</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:-O</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:-/</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:-X</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:-#</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:'(</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">B-)</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">8-)</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:-\</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">;*(</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon">:-*</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:]</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:&gt;</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">=]</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">=)</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">8)</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:}</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:D</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon small-emoticon spaced-emoticon">8D</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon small-emoticon spaced-emoticon">XD</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon small-emoticon spaced-emoticon">xD</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon small-emoticon spaced-emoticon">=D</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:(</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:&lt;</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:[</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:{</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">=(</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">;)</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">;]</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">;D</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:P</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:p</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">=P</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">=p</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:b</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:Þ</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:O</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon small-emoticon spaced-emoticon">8O</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:/</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">=/</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:S</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:#</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:X</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">B)</span>
+                        <span contenteditable="false" class="css-emoticon animated-emoticon small-emoticon spaced-emoticon">O:)</span>
+                    </div>
                 </div>
             </div>
-            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 heigth-control" style="background-color: #141608">
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 heigth-control border-left">
                 <div id="userList">
 
                 </div>
@@ -137,65 +188,6 @@
             </div>
         </div>
 
-        <div class="emoticonMenu hidden" id="emoticonMenu">
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:-)</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:)</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:o)</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:c)</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:^)</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:-D</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:-(</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:-9</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">;-)</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:-P</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:-p</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:-Þ</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:-b</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:-O</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:-/</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:-X</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:-#</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:'(</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">B-)</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">8-)</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:-\</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">;*(</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon">:-*</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:]</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:&gt;</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">=]</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">=)</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">8)</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:}</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:D</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon small-emoticon spaced-emoticon">8D</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon small-emoticon spaced-emoticon">XD</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon small-emoticon spaced-emoticon">xD</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon small-emoticon spaced-emoticon">=D</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:(</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:&lt;</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:[</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:{</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">=(</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">;)</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">;]</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">;D</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:P</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:p</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">=P</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">=p</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:b</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:Þ</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:O</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon small-emoticon spaced-emoticon">8O</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:/</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">=/</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:S</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:#</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:X</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">B)</span>
-            <span contenteditable="false" class="css-emoticon animated-emoticon small-emoticon spaced-emoticon">O:)</span>
-        </div>
     </div>
 
 

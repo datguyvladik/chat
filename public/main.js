@@ -7,10 +7,12 @@ const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
 const url = require('url');
 const ipcMain = require('electron').ipcMain;
+var windowManager = require('electron-window-manager');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
+var mainWindow;
+let videoCall;
 
 function createWindow () {
     // Create the browser window.
@@ -34,8 +36,10 @@ function createWindow () {
         //mainWindow = null
         mainWindow.webContents.send('before-close');
         e.preventDefault();
-    })
+    });
+
 }
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -76,7 +80,11 @@ ipcMain.on('synchronous-message', function(event, arg) {
 ipcMain.on('closed', () =>{
     mainWindow.destroy();
     app.quit();
-})
+});
+
+ipcMain.on('call', function () {
+    createWindow();
+});
 
 
 global.user ={

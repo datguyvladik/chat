@@ -46,6 +46,14 @@ input{
     display:none;
 }
 
+.choise{
+    height: 500px;
+    width: 300px;
+    position: absolute;
+    top: calc(100vh - 600px);
+    left: calc(50vw - 150px);
+}
+
 a.animated-button:link, a.animated-button:visited {
     position: relative;
     display: block;
@@ -106,10 +114,12 @@ a.animated-button:link, a.animated-button:visited {
     -o-transition: all 1s ease;
     transition: all 1s ease;
 }
+
+/* Victoria Buttons */
+
 a.animated-button.victoria-one {
     border: 2px solid #D24D57;
 }
-
 a.animated-button.victoria-one:after {
     background: #D24D57;
     -moz-transform: translateX(-50%) translateY(-50%) rotate(-25deg);
@@ -118,10 +128,4 @@ a.animated-button.victoria-one:after {
     transform: translateX(-50%) translateY(-50%) rotate(-25deg);
 }
 
-.choise{
-    height: 500px;
-    width: 300px;
-    position: absolute;
-    top: calc(100vh - 600px);
-    left: calc(50vw - 150px);
-}
+
