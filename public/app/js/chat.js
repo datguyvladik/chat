@@ -27,7 +27,7 @@ $(document).ready(function () {
             peerID: peer.id
         });
     });
-// Receiving a call
+    // Receiving a call
     peer.on('call', function (call) {
         // Answer the call automatically (instead of prompting user) for demo purposes
         call.answer(window.localStream);
@@ -40,26 +40,26 @@ $(document).ready(function () {
     });
 
 
-        function makeCall(peerID) {
-            // Initiate a call!
-            var call = peer.call(peerID, window.localStream);
+    function makeCall(peerID) {
+        // Initiate a call!
+        var call = peer.call(peerID, window.localStream);
 
-            getIncomingVideo(call);
-        };
+        getIncomingVideo(call);
+    };
 
-        $('#end-call').click(function () {
-            window.existingCall.close();
-            step2();
-        });
+    $('#end-call').click(function () {
+        window.existingCall.close();
+        step2();
+    });
 
-        // Retry if getUserMedia fails
-        $('#step1-retry').click(function () {
-            $('#step1-error').hide();
-            step1();
-        });
+    // Retry if getUserMedia fails
+    $('#step1-retry').click(function () {
+        $('#step1-error').hide();
+        step1();
+    });
 
-        // Get things started
-        retriveUserMedia();
+    // Get things started
+    retriveUserMedia();
 
 
     function retriveUserMedia(peerID) {
@@ -308,11 +308,20 @@ $(document).ready(function () {
         socket.emit('getUsers', chat);
     });
 
-    socket.on('closeModal', function(){
-         $('#addUser').modal('hide');
+    socket.on('closeModal', function () {
+        $('#addUser').modal('hide');
     });
 
-   socket.on('getUsers', function (members) {
+    $("#specUserToAdd").on('click', function () {
+        $("#specUserToAdd").val("");
+    });
+
+    $("#createChatInput").on('click', function () {
+        $("#createChatInput").val("");
+    });
+
+
+    socket.on('getUsers', function (members) {
         let userList = $('#userList');
         userList.children().remove();
         members.forEach((user) => {
@@ -363,10 +372,10 @@ $(document).ready(function () {
                     existingCall.innerHTML = 'Call with ' + e.currentTarget.name;
                     calls.appendChild(existingCall);
                 });
-                if(user.username === userData.username){
+                if (user.username === userData.username) {
 
                 } else {
-                container.appendChild(callBtn);
+                    container.appendChild(callBtn);
                 }
             }
             userList.append(container);
@@ -448,10 +457,44 @@ $(document).ready(function () {
 
     function callPosition() {
         let vid = document.querySelector('.vid');
-        return{
+        return {
             width: vid.offsetWidth
         }
     }
+
+    var typing = false;
+    var timeout = undefined;
+
+    function timeoutTyping() {
+        typing = false;
+        socket.emit('noLongerTypingMessage');
+    }
+
+    function isTyping() {
+        if (typing == false) {
+            typing = true
+            socket.emit('typingMessage', userData.username);
+            timeout = setTimeout(timeoutTyping, 5000);
+        } else {
+            clearTimeout(timeout);
+            timeout = setTimeout(timeoutTyping, 5000);
+        }
+    }
+
+     $(document).keypress((e) => {
+         if(e.which != 13) {
+             isTyping();
+         }
+     });
+
+     socket.on('someoneTyping', function(data){
+         var typingMsg = '<li class = "typing">' + data + " is typing..." + '</li>';
+         $('#mainChat').append(typingMsg);
+     });
+
+     socket.on('noLongerTypingMessage', function(){
+        $('.typing').remove();
+     });
 
     /////////////
 });

@@ -25,12 +25,12 @@
         <div class="row heigth-control">
             <div class="firstDiv col-xs-2 col-sm-2 col-md-2 col-lg-2 heigth-control chat-list border-right">
                 <div class="">
-                    <div style="" id="chatCreate" class="crete-chat" data-toggle="modal" data-target="#myModal">
+                    <div id="chatCreate" class="crete-chat" data-toggle="modal" data-target="#myModal">
                         <i class="fa fa-comments" aria-hidden="true"></i>
                         <span>Create new chat</span>
                         <span style="float: right">+</span>
                     </div>
-                <div id="chatList">
+                    <div id="chatList">
                     </div>
 
                 </div>
@@ -40,51 +40,13 @@
                 <div class="send-control" style="overflow-y: scroll">
 
                     <ul id="mainChat">
-                        <div class="pure-g">
 
-                            <!-- Video area -->
-                            <div class="pure-u-2-3" id="video-container">
-                                <video id="their-video" autoplay></video>
-                                <video id="my-video" muted="true" autoplay></video>
-                            </div>
-
-                            <!-- Steps -->
-                            <div class="pure-u-1-3">
-                                <h2>PeerJS Video Chat</h2>
-
-                                <!-- Get local audio/video stream -->
-                                <div id="step1">
-                                    <p>Please click `allow` on the top of the screen so we can access your webcam and microphone for calls.</p>
-                                    <div id="step1-error">
-                                        <p>Failed to access the webcam and microphone. Make sure to run this demo on an http server and click allow when asked for permission by the browser.</p>
-                                        <a href="#" class="pure-button pure-button-error" id="step1-retry">Try again</a>
-                                    </div>
-                                </div>
-
-                                <!-- Make calls to others -->
-                                <div id="step2">
-                                    <p>Your id: <span id="my-id">...</span></p>
-                                    <p>Share this id with others so they can call you.</p>
-                                    <h3>Make a call</h3>
-                                    <div class="pure-form">
-                                        <input type="text" placeholder="Call user id..." id="callto-id">
-                                        <a href="#" class="pure-button pure-button-success" id="make-call">Call</a>
-                                    </div>
-                                </div>
-
-                                <!-- Call in progress -->
-                                <div id="step3">
-                                    <p>Currently in call with <span id="their-id">...</span></p>
-                                    <p><a href="#" class="pure-button pure-button-error" id="end-call">End call</a></p>
-                                </div>
-                            </div>
-                        </div>
                     </ul>
                 </div>
                 <div class="text-area-inner">
-                       <!-- <div contenteditable="true"  id = 'msg' style="flex: 1 1 ; border: 1px solid red; display: inline-block"></div>-->
-                        <div data-text="Enter text here" contenteditable="true" id="msg" class="chat-input"></div>
-                        <i  class="fa fa-smile-o emoji-toggle" aria-hidden="true" id='smile'></i>
+                    <!-- <div contenteditable="true"  id = 'msg' style="flex: 1 1 ; border: 1px solid red; display: inline-block"></div>-->
+                    <div data-text="Enter text here" contenteditable="true" id="msg" class="chat-input"></div>
+                    <i class="fa fa-smile-o emoji-toggle" aria-hidden="true" id='smile'></i>
                     <div class="emoticonMenu hidden" id="emoticonMenu">
                         <span contenteditable="false" class="css-emoticon animated-emoticon">:-)</span>
                         <span contenteditable="false" class="css-emoticon animated-emoticon spaced-emoticon">:)</span>

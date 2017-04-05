@@ -394,3 +394,8 @@ ul {
     content: attr(data-text)
 
 }
+
+#chatCreate {
+    border-bottom: 1px solid white;
+    padding: 4px;
+}

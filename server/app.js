@@ -131,7 +131,6 @@ io.on('connection', function (socket) {
           parsedMembers.push(memberObj);
         }
       });
-
       socket.emit('getUsers', parsedMembers);
     })
   });
