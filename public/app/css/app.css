@@ -7,6 +7,11 @@ body {
     color: white;
 }
 
+.typing {
+    font-size: 30px;
+    font-family: "HelveticaNeue-Medium", "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 ::-webkit-scrollbar {
     display: none;
 }

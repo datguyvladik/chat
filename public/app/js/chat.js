@@ -215,6 +215,7 @@ $(document).ready(function () {
             var chatContainer = $('.send-control');
             chatContainer.scrollTop(chatContainer[0].scrollHeight);
             messageBox.html('');
+            $('.typing').remove();
         }
     });
 
@@ -473,7 +474,11 @@ $(document).ready(function () {
     function isTyping() {
         if (typing == false) {
             typing = true
-            socket.emit('typingMessage', userData.username);
+            var data = {
+                username: userData.username,
+                chat: chatID
+            }
+            socket.emit('typingMessage', data);
             timeout = setTimeout(timeoutTyping, 5000);
         } else {
             clearTimeout(timeout);
@@ -481,20 +486,24 @@ $(document).ready(function () {
         }
     }
 
-     $(document).keypress((e) => {
-         if(e.which != 13) {
-             isTyping();
-         }
-     });
+    $(document).keypress((e) => {
+        if (e.which != 13) {
+            isTyping();
+        }
+    });
 
-     socket.on('someoneTyping', function(data){
-         var typingMsg = '<li class = "typing">' + data + " is typing..." + '</li>';
-         $('#mainChat').append(typingMsg);
-     });
+    socket.on('someoneTyping', function (data) {
+        if (data.chat == chatID) {
+            var typingMsg = '<div class = "typing">' + data.username + " is typing..." + '</div>';
+            $('.send-control').append(typingMsg);
+            var chatContainer = $('.send-control');
+            chatContainer.scrollTop(chatContainer[0].scrollHeight);
+        }
+    });
 
-     socket.on('noLongerTypingMessage', function(){
+    socket.on('noLongerTypingMessage', function () {
         $('.typing').remove();
-     });
+    });
 
     /////////////
 });

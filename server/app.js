@@ -148,8 +148,6 @@ io.on('connection', function (socket) {
 
   delivery.on('receive.success', function (file) {  
       io.sockets.emit('imgFromServer', file.data);
-  
-    
   });
 
   /////////////
