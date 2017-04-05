@@ -224,42 +224,6 @@ function getMessages(chatName) { //получить данные определ�
         })
 }
 
-function saveFile(fileName, fileData) {
-    var file = new File({
-        name: fileName,
-        data: fileData
-    });
-    return file.save()
-        .then(function (file) {
-            if (file) {
-                return file;
-            } else {
-                return null;
-            }
-        })
-        .catch(function (err) {
-            console.log(err);
-        });
-}
-
-function getFile(fileID) {
-    return File.findOne({
-            _id: fileID
-        })
-        .then(function (file) {
-            if (file) {
-                return file;
-            } else {
-                return null;
-            }
-        })
-        .catch(function (err) {
-            console.log(err);
-        });
-}
-
-
-
 module.exports.createUser = createUser;
 module.exports.login = login;
 module.exports.findAllUsers = findAllUsers;
@@ -270,5 +234,3 @@ module.exports.getChatData = getChatData;
 module.exports.getChatDataforUser = getChatDataforUser;
 module.exports.createMessage = createMessage;
 module.exports.getMessages = getMessages;
-module.exports.saveFile = saveFile;
-module.exports.getFile = getFile;

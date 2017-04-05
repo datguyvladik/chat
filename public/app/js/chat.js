@@ -6,8 +6,6 @@ $(document).ready(function () {
     let dl = require('delivery');
     let delivery = dl.listen(socket);
     let ipcRenderer = require('electron').ipcRenderer;
-    const remote = electron.remote;
-   // var windowManager = remote.require('electron-window-manager');
     var path = require('path');
     const url = require('url');
     let chatID;
@@ -122,6 +120,27 @@ $(document).ready(function () {
         }
     });
 
+
+    function getTime(data) {
+        var date = new Date(data);
+        var hours;
+        var minutes;
+        var time;
+        if (date.getMinutes() < '9') {
+            minutes = "0" + date.getMinutes();
+        } else {
+            minutes = date.getMinutes();
+        }
+
+        if (date.getHours() < '9') {
+            hours = "0" + date.getHours();
+        } else {
+            hours = date.getHours();
+        }
+        time = hours + ":" + minutes;
+        return time;
+    }
+
     function changeCurrentChat(chat) {
         console.log('Change current chat => ' + chat);
         socket.emit('getMessages', chat);
@@ -162,17 +181,19 @@ $(document).ready(function () {
         });
     }
 
+
+
     socket.on('getMessages', (messageData) => {
-        console.log(messageData);
         $('#mainChat').children().remove();
         messageData.forEach(function (element) {
-            if(element.from === userData.username){
-                var msg = '<li class="msg-user">' + element.message + "</li>";
+            var time = getTime(element.created);
+            if (element.from === userData.username) {
+                var msg = '<li class="msg-user">' + element.message + '<span>' + time + '</span>' + "</li>";
                 $('#mainChat').append(msg);
                 var chatContainer = $('.send-control');
                 chatContainer.scrollTop(chatContainer[0].scrollHeight);
             } else {
-                var msg = '<li class="msg-recived">' + element.from + ":" + element.message + "</li>";
+                var msg = '<li class="msg-recived">' + '<span class="time">' + time + '</span>' + element.from + ": " + element.message + "</li>";
                 $('#mainChat').append(msg);
                 var chatContainer = $('.send-control');
                 chatContainer.scrollTop(chatContainer[0].scrollHeight);
@@ -180,21 +201,21 @@ $(document).ready(function () {
         });
     });
 
-    $(document).keypress((e) =>{
-       if(e.which === 13){
-           e.preventDefault();
-           var messageBox = $('#msg');
-           var msg = messageBox.html();
-           var msgToServer = {
-               message: msg,
-               chatID: chatID,
-               from: userData.username
-           }
-           socket.emit('createMessage', msgToServer);
-           var chatContainer = $('.send-control');
-           chatContainer.scrollTop(chatContainer[0].scrollHeight);
-           messageBox.html('');
-       }
+    $(document).keypress((e) => {
+        if (e.which === 13) {
+            e.preventDefault();
+            var messageBox = $('#msg');
+            var msg = messageBox.html();
+            var msgToServer = {
+                message: msg,
+                chatID: chatID,
+                from: userData.username
+            }
+            socket.emit('createMessage', msgToServer);
+            var chatContainer = $('.send-control');
+            chatContainer.scrollTop(chatContainer[0].scrollHeight);
+            messageBox.html('');
+        }
     });
 
 
@@ -240,14 +261,15 @@ $(document).ready(function () {
     });
 
     socket.on('sendMessage', function (msgData) {
+        var time = getTime(msgData.created);
         if (msgData.chatID == chatID) {
-            if(msgData.from === userData.username){
-                var msg = '<li class="msg-user">' + msgData.message + '</li>';
+            if (msgData.from === userData.username) {
+                var msg = '<li class="msg-user">' + msgData.message + '<span>' + time + '</span>' + '</li>';
                 $('#mainChat').append(msg);
                 var chatContainer = $('.send-control');
                 chatContainer.scrollTop(chatContainer[0].scrollHeight);
-            }else {
-                var msg = '<li>' + msgData.from + ": " + msgData.message + '</li>';
+            } else {
+                var msg = '<li>' + '<span class = "time">' + time + '</span>' + msgData.from + ": " + msgData.message + '</li>';
                 $('#mainChat').append(msg);
                 var chatContainer = $('.send-control');
                 chatContainer.scrollTop(chatContainer[0].scrollHeight);
@@ -270,6 +292,8 @@ $(document).ready(function () {
 
     socket.on('userExsist', function (data) {
         console.log('Cant add user');
+        $('#specUserToAdd').val('User already exsist in chat');
+        $('#specUserToAdd').css('border-bottom', '1px solid red');
     });
 
 
@@ -281,12 +305,14 @@ $(document).ready(function () {
             username: username
         };
         socket.emit('addMember', obj);
-        $('#addUser').modal('hide');
         socket.emit('getUsers', chat);
     });
 
+    socket.on('closeModal', function(){
+         $('#addUser').modal('hide');
+    });
 
-    socket.on('getUsers', function (members) {
+   socket.on('getUsers', function (members) {
         let userList = $('#userList');
         userList.children().remove();
         members.forEach((user) => {
@@ -304,7 +330,7 @@ $(document).ready(function () {
                 callBtn.classList.add('peer-call');
                 callBtn.innerHTML = 'Call';
                 callBtn.setAttribute('id', user.peer);
-                callBtn.setAttribute('data-name', user.username);
+                callBtn.setAttribute('name', user.username);
                 callBtn.addEventListener('click', function (e) {
                     let videoContainer = $('.vid');
                     let usersVideo = document.createElement('video');
@@ -334,10 +360,14 @@ $(document).ready(function () {
                     retriveUserMedia(e.currentTarget.id);
                     let calls = document.querySelector('.calls');
                     let existingCall = document.createElement('div');
-                    existingCall.innerHTML = 'Call with ' + e.currentTarget.data-name;
+                    existingCall.innerHTML = 'Call with ' + e.currentTarget.name;
                     calls.appendChild(existingCall);
                 });
+                if(user.username === userData.username){
+
+                } else {
                 container.appendChild(callBtn);
+                }
             }
             userList.append(container);
         });
@@ -346,6 +376,9 @@ $(document).ready(function () {
 
     socket.on('addMember', function () {
         console.log('Cant find user');
+        $('#specUserToAdd').val('Cant find user');
+        $('#specUserToAdd').css('border-bottom', '1px solid red');
+
     });
 
     socket.on('userDisconnected', (user) => {
@@ -376,7 +409,6 @@ $(document).ready(function () {
     dropZone[0].ondrop = function (event) {
         event.preventDefault();
         dropZone.removeClass('hover');
-        dropZone.addClass('drop');
         var file = event.dataTransfer.files[0];
         if (file.size > maxFileSize) {
             dropZone.text('Файл слишком большой!');
@@ -396,7 +428,7 @@ $(document).ready(function () {
 
     socket.on('imgFromServer', (file) => {
         var img = document.createElement('img');
-        img.setAttribute('src','data:image/png;base64,' + file);
+        img.setAttribute('src', 'data:image/png;base64,' + file);
         var imgDom = document.createElement('li');
         imgDom.classList = 'imgDom';
         $(imgDom).append(img);
