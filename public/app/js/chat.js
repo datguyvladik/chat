@@ -68,10 +68,8 @@ $(document).ready(function () {
         // Get audio/video stream
         navigator.getUserMedia({
             audio: true,
-            video: {
-                width: 960,
-                height: 500
-            }
+            video: true
+
         }, function (stream) {
             // Set your video displays
             $('#usersVideo').prop('src', URL.createObjectURL(stream));
@@ -306,6 +304,7 @@ $(document).ready(function () {
                 callBtn.classList.add('peer-call');
                 callBtn.innerHTML = 'Call';
                 callBtn.setAttribute('id', user.peer);
+                callBtn.setAttribute('data-name', user.username);
                 callBtn.addEventListener('click', function (e) {
                     let videoContainer = $('.vid');
                     let usersVideo = document.createElement('video');
@@ -333,6 +332,10 @@ $(document).ready(function () {
                     });
                     console.log(e.currentTarget.id);
                     retriveUserMedia(e.currentTarget.id);
+                    let calls = document.querySelector('.calls');
+                    let existingCall = document.createElement('div');
+                    existingCall.innerHTML = 'Call with ' + e.currentTarget.data-name;
+                    calls.appendChild(existingCall);
                 });
                 container.appendChild(callBtn);
             }
