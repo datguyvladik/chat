@@ -6,8 +6,10 @@ $(document).ready(function () {
     let dl = require('delivery');
     let delivery = dl.listen(socket);
     let ipcRenderer = require('electron').ipcRenderer;
-    var remote = require('electron').remote;
-    var windowManager = remote.require('electron-window-manager');
+    const remote = electron.remote;
+   // var windowManager = remote.require('electron-window-manager');
+    var path = require('path');
+    const url = require('url');
     let chatID;
     let fileID;
     let peer = new Peer({
@@ -27,12 +29,11 @@ $(document).ready(function () {
             peerID: peer.id
         });
     });
-
-    // Receiving a call
+// Receiving a call
     peer.on('call', function (call) {
         // Answer the call automatically (instead of prompting user) for demo purposes
         call.answer(window.localStream);
-        step3(call);
+        getIncomingVideo(call);
     });
     peer.on('error', function (err) {
         alert(err.message);
@@ -40,13 +41,13 @@ $(document).ready(function () {
         step2();
     });
 
-    $(function () {
-        $('#make-call').click(function () {
-            // Initiate a call!
-            var call = peer.call($('#callto-id').val(), window.localStream);
 
-            step3(call);
-        });
+        function makeCall(peerID) {
+            // Initiate a call!
+            var call = peer.call(peerID, window.localStream);
+
+            getIncomingVideo(call);
+        };
 
         $('#end-call').click(function () {
             window.existingCall.close();
@@ -60,20 +61,23 @@ $(document).ready(function () {
         });
 
         // Get things started
-        step1();
-    });
+        retriveUserMedia();
 
-    function step1() {
+
+    function retriveUserMedia(peerID) {
         // Get audio/video stream
         navigator.getUserMedia({
             audio: true,
-            video: true
+            video: {
+                width: 960,
+                height: 500
+            }
         }, function (stream) {
             // Set your video displays
-            $('#my-video').prop('src', URL.createObjectURL(stream));
+            $('#usersVideo').prop('src', URL.createObjectURL(stream));
 
             window.localStream = stream;
-            step2();
+            makeCall(peerID);
         }, function () {
             $('#step1-error').show();
         });
@@ -84,7 +88,7 @@ $(document).ready(function () {
         $('#step2').show();
     }
 
-    function step3(call) {
+    function getIncomingVideo(call) {
         // Hang up on an existing call if present
         if (window.existingCall) {
             window.existingCall.close();
@@ -92,7 +96,7 @@ $(document).ready(function () {
 
         // Wait for stream on the call, then set peer video display
         call.on('stream', function (stream) {
-            $('#their-video').prop('src', URL.createObjectURL(stream));
+            $('#incomingVideo').prop('src', URL.createObjectURL(stream));
         });
 
         // UI stuff
@@ -102,6 +106,8 @@ $(document).ready(function () {
         $('#step1, #step2').hide();
         $('#step3').show();
     }
+
+
 
     ipcRenderer.on('before-close', () => {
         socket.emit('disconnectMe', userData.username);
@@ -292,16 +298,41 @@ $(document).ready(function () {
             let userBlock = document.createElement('span');
             userBlock.classList = 'fa fa-user-secret';
             userBlock.innerHTML = user.username;
-            userBlock.setAttribute('data-peer', user.peer);
+            //userBlock.setAttribute('data-peer', user.peer);
             container.appendChild(userBlock);
             if (user.isOnline) {
                 container.style.color = 'green';
                 let callBtn = document.createElement('button');
                 callBtn.classList.add('peer-call');
                 callBtn.innerHTML = 'Call';
-                callBtn.addEventListener('click', function () {
-                   var callWindow = windowManager.createNew('Call', 'Call me maybe');
-                   callWindow.open();
+                callBtn.setAttribute('id', user.peer);
+                callBtn.addEventListener('click', function (e) {
+                    let videoContainer = $('.vid');
+                    let usersVideo = document.createElement('video');
+                    usersVideo.setAttribute('id', 'usersVideo');
+                    usersVideo.setAttribute('autoplay', 'true');
+                    usersVideo.setAttribute('muted', 'true');
+                    usersVideo.style.width = '270px';
+                    let incomingVideo = document.createElement('video');
+                    let videoDiv = document.createElement('div');
+                    videoDiv.classList.add('callPlaceholder');
+                    videoDiv.style.width = callPosition().width + 'px';
+                    incomingVideo.setAttribute('id', 'incomingVideo');
+                    incomingVideo.setAttribute('autoplay', 'true');
+                    //incomingVideo.setAttribute('poster', 'https://media.giphy.com/media/jL0cnXugVf6s8/giphy.gif');
+                    incomingVideo.style.width = (callPosition().width) + "px";
+                    videoDiv.appendChild(incomingVideo);
+                    videoContainer.prepend(videoDiv);
+                    usersVideo.style.bottom = incomingVideo.offsetTop;
+                    usersVideo.style.right = incomingVideo.offsetLeft;
+                    videoDiv.appendChild(usersVideo);
+                    let incVideo = document.querySelector('#incomingVideo');
+                    incVideo.addEventListener('loadedmetadata', function (e) {
+                        this.width = incVideo.style.width;
+                        this.height = incVideo.style.height;
+                    });
+                    console.log(e.currentTarget.id);
+                    retriveUserMedia(e.currentTarget.id);
                 });
                 container.appendChild(callBtn);
             }
@@ -379,5 +410,13 @@ $(document).ready(function () {
         }
 
     }
+
+    function callPosition() {
+        let vid = document.querySelector('.vid');
+        return{
+            width: vid.offsetWidth
+        }
+    }
+
     /////////////
 });

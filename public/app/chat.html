@@ -23,7 +23,7 @@
     <div class="container-fluid">
         <!-- If Needed Left and Right Padding in 'md' and 'lg' screen means use container class -->
         <div class="row heigth-control">
-            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 heigth-control chat-list border-right">
+            <div class="firstDiv col-xs-2 col-sm-2 col-md-2 col-lg-2 heigth-control chat-list border-right">
                 <div class="">
                     <div style="" id="chatCreate" class="crete-chat" data-toggle="modal" data-target="#myModal">
                         <i class="fa fa-comments" aria-hidden="true"></i>
@@ -35,8 +35,10 @@
 
                 </div>
             </div>
-            <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 heigth-control">
+            <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 heigth-control vid">
+
                 <div class="send-control" style="overflow-y: scroll">
+
                     <ul id="mainChat">
                         <div class="pure-g">
 
@@ -145,9 +147,15 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 heigth-control border-left">
-                <div id="userList">
 
+            <div class="lastDiv col-xs-2 col-sm-2 col-md-2 col-lg-2 heigth-control border-left flex">
+                <div class="users">
+                    <div id="userList">
+
+                    </div>
+                    <div class="calls">
+                        <div>Call 1</div>
+                    </div>
                 </div>
             </div>
         </div>

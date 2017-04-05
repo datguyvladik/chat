@@ -275,3 +275,50 @@ ul{
 [contentEditable=true]:empty:not(:focus):before{
     content:attr(data-text)
 }
+
+.flex{
+    display: flex;
+    justify-content: center;
+    align-content: stretch;
+}
+
+.users{
+    display: flex;
+    flex-direction: column;
+}
+
+#userList{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 2;
+}
+
+.calls{
+    display: flex;
+    flex-grow: 1;
+    align-items: flex-start;
+    justify-content: center;
+    border-top: 1px solid white;
+    padding-top: 5px;
+    border-radius: 3px;
+}
+
+.callPlaceholder{
+    Z-INDEX: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+    background-color: #3d3d3e;
+}
+
+#incomingVideo{
+    height: 500px;
+    object-fit: cover;
+}
+
+#usersVideo{
+    position: absolute;
+}
