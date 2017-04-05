@@ -277,6 +277,15 @@ ul {
 
 .peer-call {
     float: right;
+    background-color: transparent;
+    border: none;
+    padding-left: 3px;
+    outline: none;
+    transition:         transform .8s ease-in-out;
+}
+
+.peer-call:hover{
+    transform: rotate(360deg);
 }
 
 .text-area-inner {
@@ -373,6 +382,7 @@ ul {
     border-top: 1px solid white;
     padding-top: 5px;
     border-radius: 3px;
+    flex-direction: column;
 }
 
 .callPlaceholder{
@@ -397,7 +407,23 @@ ul {
 
 [contentEditable=true]:empty:not(:focus):before {
     content: attr(data-text)
+}
 
+.end-call{
+    background-color: transparent;
+    margin-top: 10px;
+    border-radius: 6px;
+    font-size: 19px;
+    outline: none;
+    align-self: center;
+}
+
+.end-call:hover{
+    color: red;
+}
+
+.unread{
+    color: orange;
 }
 
 #chatCreate {

@@ -8,6 +8,7 @@ $(document).ready(function () {
     let ipcRenderer = require('electron').ipcRenderer;
     var path = require('path');
     const url = require('url');
+    const remote = require('electron').remote;
     let chatID;
     let fileID;
     let peer = new Peer({
@@ -30,8 +31,70 @@ $(document).ready(function () {
     // Receiving a call
     peer.on('call', function (call) {
         // Answer the call automatically (instead of prompting user) for demo purposes
-        call.answer(window.localStream);
-        getIncomingVideo(call);
+        let calls = document.querySelector('.calls');
+        let choies = document.createElement('div');
+        //choies.setAttribute('text-align', 'center');
+        let yes = document.createElement('button');
+        yes.classList.add('end-call');
+        let no = document.createElement('button');
+        no.classList.add('end-call');
+        yes.innerHTML = 'Answer call';
+        no.innerHTML = 'Decline call';
+        choies.appendChild(yes);
+        choies.appendChild(no);
+        yes.addEventListener('click', function () {
+            $('.calls').children().remove();
+            call.answer(window.localStream);
+            getIncomingVideo(call);
+            let videoContainer = $('.vid');
+            let usersVideo = document.createElement('video');
+            usersVideo.setAttribute('id', 'usersVideo');
+            usersVideo.setAttribute('autoplay', 'true');
+            usersVideo.setAttribute('muted', 'true');
+            usersVideo.style.width = '270px';
+            let incomingVideo = document.createElement('video');
+            let videoDiv = document.createElement('div');
+            videoDiv.classList.add('callPlaceholder');
+            videoDiv.style.width = callPosition().width + 'px';
+            incomingVideo.setAttribute('id', 'incomingVideo');
+            incomingVideo.setAttribute('autoplay', 'true');
+            incomingVideo.setAttribute('poster', 'https://media.giphy.com/media/jL0cnXugVf6s8/giphy.gif');
+            incomingVideo.style.width = (callPosition().width) + "px";
+            videoDiv.appendChild(incomingVideo);
+            videoContainer.prepend(videoDiv);
+            usersVideo.style.bottom = incomingVideo.offsetTop;
+            usersVideo.style.right = incomingVideo.offsetLeft;
+            videoDiv.appendChild(usersVideo);
+            let incVideo = document.querySelector('#incomingVideo');
+            incVideo.addEventListener('loadedmetadata', function (e) {
+                this.width = incVideo.style.width;
+                this.height = incVideo.style.height;
+            });
+            //console.log(e.currentTarget.id);
+            //retriveUserMedia(e.currentTarget.id);
+            let calls = document.querySelector('.calls');
+            let existingCall = document.createElement('div');
+            let endBtn = document.createElement('button');
+            endBtn.classList.add('end-call');
+            endBtn.innerHTML = 'End call';
+            endBtn.addEventListener('click', function () {
+                $(videoDiv).remove();
+                endCall();
+                window.localStream.getVideoTracks()[0].stop();
+                $('.calls').children().remove();
+            });
+
+            //existingCall.innerHTML = 'Call with ' + e.currentTarget.name;
+            calls.appendChild(existingCall);
+            calls.appendChild(endBtn);
+            retriveUserMediaOnCall();
+
+        });
+        no.addEventListener('click', function () {
+            call.close(window.localStream);
+
+        });
+        calls.appendChild(choies);
     });
     peer.on('error', function (err) {
         alert(err.message);
@@ -47,19 +110,19 @@ $(document).ready(function () {
         getIncomingVideo(call);
     };
 
-    $('#end-call').click(function () {
-        window.existingCall.close();
-        step2();
-    });
+        function endCall() {
+            window.existingCall.close();
+            step2();
+        };
 
-    // Retry if getUserMedia fails
-    $('#step1-retry').click(function () {
-        $('#step1-error').hide();
-        step1();
-    });
+        // Retry if getUserMedia fails
+        $('#step1-retry').click(function () {
+            $('#step1-error').hide();
+            step1();
+        });
 
-    // Get things started
-    retriveUserMedia();
+        // Get things started
+        //retriveUserMedia();
 
 
     function retriveUserMedia(peerID) {
@@ -74,6 +137,22 @@ $(document).ready(function () {
 
             window.localStream = stream;
             makeCall(peerID);
+        }, function () {
+            $('#step1-error').show();
+        });
+    }
+    function retriveUserMediaOnCall() {
+        // Get audio/video stream
+        navigator.getUserMedia({
+            audio: true,
+            video: true
+
+        }, function (stream) {
+            // Set your video displays
+            $('#usersVideo').prop('src', URL.createObjectURL(stream));
+
+            window.localStream = stream;
+           // makeCall(peerID);
         }, function () {
             $('#step1-error').show();
         });
@@ -97,10 +176,6 @@ $(document).ready(function () {
 
         // UI stuff
         window.existingCall = call;
-        $('#their-id').text(call.peer);
-        call.on('close', step2);
-        $('#step1, #step2').hide();
-        $('#step3').show();
     }
 
 
@@ -153,6 +228,7 @@ $(document).ready(function () {
         chatID = event.currentTarget.id;
         let chat = event.currentTarget;
         $(chat).addClass('active');
+        $(chat).removeClass('unread');
         changeCurrentChat(chatID);
     }
 
@@ -215,7 +291,6 @@ $(document).ready(function () {
             var chatContainer = $('.send-control');
             chatContainer.scrollTop(chatContainer[0].scrollHeight);
             messageBox.html('');
-            $('.typing').remove();
         }
     });
 
@@ -276,6 +351,12 @@ $(document).ready(function () {
                 chatContainer.scrollTop(chatContainer[0].scrollHeight);
             }
 
+        }
+            else {
+            let unreadChat = document.getElementById(msgData.chatID)
+            if (unreadChat) {
+                unreadChat.classList.add('unread');
+            }
         }
     });
 
@@ -338,7 +419,7 @@ $(document).ready(function () {
                 container.style.color = 'green';
                 let callBtn = document.createElement('button');
                 callBtn.classList.add('peer-call');
-                callBtn.innerHTML = 'Call';
+                callBtn.innerHTML = '<i class="fa fa-phone" aria-hidden="true"></i>';
                 callBtn.setAttribute('id', user.peer);
                 callBtn.setAttribute('name', user.username);
                 callBtn.addEventListener('click', function (e) {
@@ -354,7 +435,7 @@ $(document).ready(function () {
                     videoDiv.style.width = callPosition().width + 'px';
                     incomingVideo.setAttribute('id', 'incomingVideo');
                     incomingVideo.setAttribute('autoplay', 'true');
-                    //incomingVideo.setAttribute('poster', 'https://media.giphy.com/media/jL0cnXugVf6s8/giphy.gif');
+                    incomingVideo.setAttribute('poster', 'https://media.giphy.com/media/jL0cnXugVf6s8/giphy.gif');
                     incomingVideo.style.width = (callPosition().width) + "px";
                     videoDiv.appendChild(incomingVideo);
                     videoContainer.prepend(videoDiv);
@@ -370,8 +451,19 @@ $(document).ready(function () {
                     retriveUserMedia(e.currentTarget.id);
                     let calls = document.querySelector('.calls');
                     let existingCall = document.createElement('div');
-                    existingCall.innerHTML = 'Call with ' + e.currentTarget.name;
+                    let endBtn = document.createElement('button');
+                    endBtn.classList.add('end-call');
+                    endBtn.innerHTML = 'End call';
+                    endBtn.addEventListener('click', function () {
+                        $(videoDiv).remove();
+                        endCall();
+                        window.localStream.getVideoTracks()[0].stop();
+                        $('.calls').children().remove();
+                    });
+
+                    existingCall.innerHTML = 'Active call';
                     calls.appendChild(existingCall);
+                    calls.appendChild(endBtn);
                 });
                 if (user.username === userData.username) {
 
@@ -473,12 +565,12 @@ $(document).ready(function () {
 
     function isTyping() {
         if (typing == false) {
-            typing = true
+            typing = true;
             var data = {
                 username: userData.username,
                 chat: chatID
-            }
-            socket.emit('typingMessage', data);
+            };
+            socket.emit('typingMessage', userData.username);
             timeout = setTimeout(timeoutTyping, 5000);
         } else {
             clearTimeout(timeout);

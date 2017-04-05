@@ -150,5 +150,13 @@ io.on('connection', function (socket) {
       io.sockets.emit('imgFromServer', file.data);
   });
 
+  socket.on('typingMessage', function (data) {
+     socket.emit('someoneTyping', data);
+  });
+
+  socket.on('noLongerTypingMessage', function () {
+     socket.emit('noLongerTypingMessage');
+  });
+
   /////////////
 });
